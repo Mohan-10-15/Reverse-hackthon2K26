@@ -5,10 +5,10 @@ You are an expert full-stack web developer and brand designer. Build a complete,
 - Event: **Reverse Hackathon 2026** — a "reverse hackathon": teams receive an already-built, intentionally vulnerable/broken system and must find, patch, and secure it within a fixed time window. Scoring = vulnerabilities fixed, quality of the fix, and a short final review/showcase. Theme wordmark: **Reverse Hackathon 2026** ("The Code of Silence") as a middle-of-the-page flavor line, because it fits the college's "[word]2026" convention.
 - Tagline: **Reverse. Exploit. Defend.**
 - Organizer: **The Whitehatians**, Department of Cyber Security (DEP-CYS), SRM Valliammai Engineering College, Kattankulathur, Chennai, Tamil Nadu.
-- Date: **Oct 8, 2026, 09:00 AM IST** (gates 08:00, registration ledger closes 07:00). Countdown targets this exact date/time.
+- Date: **Oct 13, 2026, 09:00 AM IST** (gates 08:00, registration ledger closes 07:00). Countdown targets this exact date/time.
 - Venue: **DEP-CYS Campus, SRM Valliammai Engineering College** — Address for footer: S.R.M. Nagar, Kattankulathur – 603203, Chengalpattu District, Tamil Nadu, India.
 - Eligibility: **DEP-CYS students only** — Year I, II, or III (college ID at check-in).
-- Format: **teams of exactly two only; no solo entry**. Team lead = "Capo" (flavor label next to plain "Team Lead"). Duration: **3-hour sprint** (09:30–12:30). Ends with a **5-minute live showcase** per pod (from ~13:00).
+- Format: **Solo or Duo; no teams larger than two**. A Duo has one team lead and exactly one partner. Team lead = "Capo" (flavor label next to plain "Team Lead"). Duration: **3-hour sprint** (09:30–12:30). Ends with a **5-minute live showcase** per pod (from ~13:00).
 - **15 domains** chosen at registration — each with a 1–2 sentence description and 2–3 real, free practice platforms:
   1. Ethical Hacking (TryHackMe, Hack The Box, HackerOne)
   2. Penetration Testing (PortSwigger Academy, PentesterLab, VulnHub)
@@ -41,19 +41,20 @@ Cinematic 1970s mafia-drama aesthetic: dark, formal, dramatic — never violent 
 
 # DESIGN LANGUAGE (inspired by the college's actual sister sites — zugrunde Altruixx 2026 and CYBORGS '26)
 - Single scrolling page with sticky header nav (no multi-page): Home → The Contract → The Timeline → The Family Code → The Cut → Meet the Family → The Ledger (form) → FAQ → Footer.
-- Hero: full-bleed dark background, spotlight/vignette, animated wordmark reveal, one-line tagline, organizer credit, countdown to Oct 8 2026 09:00 IST, CTA "Join the Family — Register".
+- Hero: full-bleed dark background, spotlight/vignette, animated wordmark reveal, one-line tagline, organizer credit, countdown to Oct 13 2026 09:00 IST, CTA "Join the Family — Register".
 - The Family Code is the classy centerpiece: styled like an aged parchment/ledger page, ornate gold double-border, wax-seal graphic, noise texture. Lists eligibility, format, judging criteria, code of conduct.
 - Meet the Family: portrait grid for faculty convenor + staff coordinators + student committee. Titles are primary; one small "family" nickname per card as flavor only. Use initials-based placeholder avatars; note in README the exact filenames to drop real photos into `/team/` (or `/public/team/`).
 - The Cut: plaques for 1st, 2nd, 3rd (+ optional "Best Defence" special mention). Amounts TBA unless the user supplies them.
 
 # REGISTRATION FORM — the core deliverable, build it carefully
-- Team-of-two registration only; remove the Solo option (not teams of more than two).
+- Support both Solo and Duo registration; a Duo contains exactly two people, with no larger teams.
 - Fields, all labeled plainly with a flavor label beside it ("Capo · Team Lead"):
-  - **Pod Lead**: full name, college email, phone, year (I/II/III dropdown), roll number, domain (dropdown of the 15).
-  - **Required partner**: team name + partner's full name / year / roll number.
+  - **Primary participant / Team Lead**: full name, college email, phone, year (I/II/III dropdown), roll number, domain (dropdown of the 15).
+  - **Team name / Solo alias**: required and unique for every entry.
+  - **Duo partner**: required only for Duo; partner's full name / year / roll number.
   - "How they heard" (Instagram / WhatsApp / Friend / Faculty / Other). Do not collect T-shirt size.
   - Checkbox agreeing to The Code (link to the Code section).
-- Validation: required-field checks, email/phone format, team = exactly one partner — client-side (sufficient for a static single file). **Block duplicate submissions** (same email or same team name twice) using localStorage.
+- Validation: required-field checks, email/phone format, and partner details only for Duo — client-side plus server-side. **Block duplicate submissions** (same participant email or team name / Solo alias twice).
 - On valid submit: themed confirmation **"Welcome to the Family."** with a registration ID (e.g. `RH26-XXXX`), a **"Send Registration Email"** button (pre-filled `mailto:` to [CONTACT EMAIL] with all details in the body), and a **"Copy Details"** fallback button. This email is the real delivery mechanism — never drop it for a fake success state. Show real error states; never fail silently.
 
 # ANIMATION

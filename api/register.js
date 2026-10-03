@@ -68,10 +68,11 @@ module.exports = async function handler(req, res) {
 
     if (clash) {
       const emailHit = (clash.emails || []).some((e) => value.emails.includes(e));
+      const entryLabel = value.entryFormat === "duo" ? "team name" : "solo alias";
       return res.status(409).json({
         error: emailHit
           ? "That email is already registered for this event - each participant sits once."
-          : `The team name "${value.teamName}" is already taken. Choose a different name.`,
+          : `The ${entryLabel} "${value.teamName}" is already taken. Choose a different name.`,
       });
     }
 
@@ -87,7 +88,7 @@ module.exports = async function handler(req, res) {
       // Two people submitted at the same moment; the index caught it.
       if (e && e.code === 11000) {
         return res.status(409).json({
-          error: "That team name or email was just registered by someone else. Try again.",
+          error: "That team name / solo alias or email was just registered by someone else. Try again.",
         });
       }
       throw e;

@@ -188,13 +188,13 @@ function validateRegistration(body) {
     return { ok: false, fieldErrors: { _: ["Send a registration object."] } };
   }
 
-  const entryFormat = "duo";
-  if (body.entryFormat !== "duo") {
-    fail("entryFormat", "Only teams of two may register.");
+  const entryFormat = body.entryFormat === "duo" ? "duo" : "solo";
+  if (body.entryFormat !== "solo" && body.entryFormat !== "duo") {
+    fail("entryFormat", "Choose SOLO or TEAM OF TWO.");
   }
 
   const teamName = clean(body.teamName, 60);
-  if (teamName.length < 2) fail("teamName", "Enter a team name.");
+  if (teamName.length < 2) fail("teamName", "Enter a team name or solo alias.");
 
   const leader = {
     fullName: clean(body.leader?.fullName, 80),
@@ -370,7 +370,7 @@ function participantRows(reg) {
   const rows = [
     ["Role", "Name", "Email", "Mobile", "Year", "Register no."],
     [
-      "Capo (team lead)",
+      reg.headcount === 2 ? "Capo (team lead)" : "Solo participant",
       reg.leader.fullName,
       reg.leader.email,
       reg.leader.phone,

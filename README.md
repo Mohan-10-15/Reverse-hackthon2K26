@@ -27,9 +27,9 @@ front end, and no framework.
 ## Event facts
 
 - **Date:** Tuesday, 13 October 2026, 09:00 IST (gates 08:00, ledger closes 07:00)
-- **Format:** teams of two only (Capo/team lead + exactly one partner)
+- **Format:** Solo or Duo; a Duo is one team lead plus exactly one partner (no larger teams)
 - **Eligibility:** DEP-CYS students, years I–III
-- **Fee:** ₹100 per participant (a duo pays ₹200)
+- **Fee:** ₹100 per participant (Solo ₹100; Duo ₹200)
 
 The date lives in six places inside `index.html` — meta description, the `content:` string in
 `.landing-art-frame::after`, the hero date line, the "ENTRY STATUS" badge, the contact block, and
@@ -87,19 +87,21 @@ the response reports `"emailSent": false`.
 5. **Deploy** → green **Connect** button → **Drivers** → copy the connection string.
 
 No manual collection setup is needed: `api/_lib.js` creates the indexes on first write, including
-a unique index on the lowercased team name and another on participant emails.
+a unique index on the lowercased team name / Solo alias and another on participant emails.
 
 > M0 free tier is **5 GB shared across the whole cluster** and caps a document at 16 MB. Payment
 > screenshots (≤2 MB) fit comfortably; do not store PDFs or videos there.
 
 ## Registration and payment
 
-Every question is mandatory. `api/_lib.js` is the single source of truth for validation, and the
-page mirrors each server-side error back onto the matching input.
+Every field shown for the selected format is mandatory. `api/_lib.js` is the single source of truth
+for validation, and the page mirrors each server-side error back onto the matching input.
 
-The form collects: the team name, the lead's name, email, phone, year, department, gender and
-register number, the required partner's name/year/register number, one of 15 domains, how they
-heard about the event, the rules checkbox, the **UPI transaction/UTR id**, and a **payment screenshot**.
+The form collects the entry format (Solo or Duo), a unique team name or Solo alias, and the primary
+participant's name, email, phone, year, department, gender and register number. Duo entries also
+require the partner's name, year and register number. Every entry includes one of 15 domains, how
+the participant heard about the event, the rules checkbox, the **UPI transaction/UTR id**, and a
+**payment screenshot**.
 
 The screenshot is downscaled in the browser through a canvas (max edge 1400 px, JPEG q0.82) before
 upload, so a 4 MB phone photo becomes roughly 200 KB. The server rejects anything over 2 MB, any

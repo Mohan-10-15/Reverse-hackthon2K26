@@ -128,7 +128,7 @@ function buildWorkbook(regs, totals) {
 
   for (const reg of regs) {
     const crew = [
-      { role: "Capo (Team Lead)", fullName: reg.leader.fullName, email: reg.leader.email, mobile: reg.leader.phone, department: reg.leader.department, year: reg.leader.year, roll: reg.leader.rollNumber, gender: reg.leader.gender },
+      { role: reg.headcount === 2 ? "Capo (Team Lead)" : "Solo Participant", fullName: reg.leader.fullName, email: reg.leader.email, mobile: reg.leader.phone, department: reg.leader.department, year: reg.leader.year, roll: reg.leader.rollNumber, gender: reg.leader.gender },
       ...(reg.partner
         ? [{ role: "Soldato (Partner)", fullName: reg.partner.fullName, email: "", mobile: "", department: "", year: reg.partner.year, roll: reg.partner.rollNumber, gender: "" }]
         : []),
