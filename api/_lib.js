@@ -22,7 +22,6 @@ const PAYMENT = {
 
 const YEARS = ["I", "II", "III"];
 const GENDERS = ["Female", "Male"];
-const TSHIRT_SIZES = ["S", "M", "L", "XL"];
 const HEARD_ABOUT = [
   "Instagram",
   "WhatsApp",
@@ -236,9 +235,6 @@ function validateRegistration(body) {
   const domain = clean(body.domain, 60);
   if (!DOMAINS.includes(domain)) fail("domain", "Choose one domain.");
 
-  const tshirtSize = clean(body.tshirtSize, 4);
-  if (!TSHIRT_SIZES.includes(tshirtSize)) fail("tshirtSize", "Select a T-shirt size.");
-
   const heardAbout = clean(body.heardAbout, 40);
   if (!HEARD_ABOUT.includes(heardAbout)) fail("heardAbout", "Tell us how you heard about the event.");
 
@@ -301,7 +297,6 @@ function validateRegistration(body) {
       partner,
       emails,
       domain,
-      tshirtSize,
       heardAbout,
       agree: true,
       headcount,
@@ -547,7 +542,6 @@ module.exports = {
   PAYMENT,
   DOMAINS,
   HEARD_ABOUT,
-  TSHIRT_SIZES,
   YEARS,
   Binary,
   isMongoConfigured,

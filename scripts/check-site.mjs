@@ -96,7 +96,8 @@ const files = [];
 })(ROOT);
 
 // Accent-insensitive, so a re-introduced "Omertà" in any casing is still caught.
-const RETIRED = /omert|om26|2k26/i;
+// Match 2K26 as a standalone label, not inside the Vercel project hostname slug.
+const RETIRED = /omert|om26|\b2k26\b/i;
 let branded = 0;
 for (const f of files) {
   // The checker necessarily contains the words it looks for.

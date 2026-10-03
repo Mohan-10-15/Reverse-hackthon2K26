@@ -161,7 +161,7 @@
         <thead>
           <tr>
             <th>ID</th><th>FORMAT</th><th>TEAM / ALIAS</th><th>CAPO</th><th>PARTNER</th>
-            <th>DOMAIN</th><th>T-SHIRT</th><th>UPI UTR</th><th>PROOF</th>
+            <th>DOMAIN</th><th>UPI UTR</th><th>PROOF</th>
             <th style="text-align:right">FEE</th><th>SUBMITTED</th>
           </tr>
         </thead>
@@ -263,7 +263,6 @@
           esc(r.leader.email) + "</small></td>" +
         "<td>" + partner + partnerExtra + "</td>" +
         "<td>" + esc(r.domain) + "</td>" +
-        "<td>" + esc(r.tshirtSize) + "</td>" +
         "<td>" + esc(r.payment.upiTransactionId) + "</td>" +
         '<td><button class="mini" type="button" data-proof="' + esc(r.registrationId) + '">View</button>' +
           (proof ? "<br><small style='color:#7d929f'>" + esc(proof.filename) + "</small>" : "") + "</td>" +

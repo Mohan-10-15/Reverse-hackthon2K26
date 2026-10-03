@@ -41,7 +41,6 @@ const PARTICIPANT_KEYS = [
   "Register no.",
   "Gender",
   "Domain",
-  "T-shirt size",
   "Heard about",
   "UPI UTR",
   "Proof file",
@@ -64,7 +63,6 @@ const REGISTRATION_KEYS = [
   "Partner year",
   "Partner register no.",
   "Domain",
-  "T-shirt size",
   "Heard about",
   "UPI UTR",
   "Proof file",
@@ -152,7 +150,6 @@ function buildWorkbook(regs, totals) {
         "Register no.": p.roll,
         "Gender": p.gender,
         "Domain": reg.domain,
-        "T-shirt size": reg.tshirtSize,
         "Heard about": reg.heardAbout,
         "UPI UTR": reg.payment.upiTransactionId,
         "Proof file": reg.payment.proof.filename,
@@ -173,7 +170,7 @@ function buildWorkbook(regs, totals) {
   people.getColumn(at(PARTICIPANT_KEYS, "Fee (Rs)")).numFmt = '"Rs "#,##0';
   people.getColumn(1).alignment = { horizontal: "center", vertical: "top" };
   finishSheet(people, PARTICIPANT_KEYS, [
-    5, 22, 12, 24, 19, 24, 26, 14, 22, 8, 15, 9, 26, 12, 18, 20, 22, 10, 20,
+    5, 22, 12, 24, 19, 24, 26, 14, 22, 8, 15, 9, 26, 18, 20, 22, 10, 20,
   ]);
 
   /* ---- Registrations ---- */
@@ -193,7 +190,6 @@ function buildWorkbook(regs, totals) {
     "Partner year": reg.partner ? reg.partner.year : "-",
     "Partner register no.": reg.partner ? reg.partner.rollNumber : "-",
     "Domain": reg.domain,
-    "T-shirt size": reg.tshirtSize,
     "Heard about": reg.heardAbout,
     "UPI UTR": reg.payment.upiTransactionId,
     "Proof file": reg.payment.proof.filename,
@@ -211,7 +207,7 @@ function buildWorkbook(regs, totals) {
   sheet.getColumn(at(REGISTRATION_KEYS, "Submitted at")).numFmt = "dd-mmm-yyyy hh:mm";
   sheet.getColumn(at(REGISTRATION_KEYS, "Fee due (Rs)")).numFmt = '"Rs "#,##0';
   finishSheet(sheet, REGISTRATION_KEYS, [
-    5, 22, 12, 24, 11, 24, 26, 14, 26, 18, 20, 12, 19, 26, 12, 18, 20, 22, 13, 20,
+    5, 22, 12, 24, 11, 24, 26, 14, 26, 18, 20, 12, 19, 26, 18, 20, 22, 13, 20,
   ]);
 
   /* ---- Summary ---- */

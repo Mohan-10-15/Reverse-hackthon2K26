@@ -4,7 +4,7 @@ Registration site for the Reverse Hackathon 2026, run by **The Whitehatians**, D
 Cyber Security, SRM Valliammai Engineering College. A three-hour defensive sprint: teams receive an
 already-built, deliberately vulnerable system and must find, patch and defend the fixes.
 
-**Live site:** <https://reverse-hack.vercel.app/>
+**Live site:** <https://reverse-hackthon2k26.vercel.app/>
 
 ## What is in this repo
 
@@ -12,7 +12,7 @@ already-built, deliberately vulnerable system and must find, patch and defend th
 | --- | --- |
 | `index.html` | The whole public site — markup, CSS and JS in one file. This is what visitors get. |
 | `admin.html` | Organiser dashboard. Asks for `ADMIN_KEY`, shows totals, proof viewer and Excel download. |
-| `hero-bg.jpg`, `superman-hero.jpg`, `about-bg.jpg`, `standards-bg.jpg`, `dc-contact-art.jpg`, `dc-contact-clear.jpg`, `srm-valliammai-logo.jpg`, `assets/superman-hero.png` | Section backgrounds and art. All local — nothing is hotlinked. |
+| `hero-bg.jpg`, `superman-hero.jpg`, `about-bg.jpg`, `standards-bg.jpg`, `dc-contact-art.jpg`, `dc-contact-clear.jpg` / `.webp` / `.avif`, `srm-valliammai-logo.jpg`, `assets/superman-hero.png` / `.webp` / `.avif` | Section backgrounds and art. Modern browsers use the smaller AVIF/WebP variants; original files remain as fallbacks. |
 | `assets/villains/` | The 15 gallery cards, downloaded from the old CDN so the site no longer depends on a third-party host. |
 | `assets/upi-qr.jpeg` | UPI QR code shown in the payment step. |
 | `og-deck.png` | Open Graph preview image. |
@@ -79,8 +79,11 @@ the response reports `"emailSent": false`.
 2. **Create a deployment** — region closest to the college (Chennai), free tier.
 3. **Database Access** → *Add New Database User* → set a username and password → role
    **Read and write to any database**.
-4. **Network Access** → *Add IP Address*. Vercel's outbound IPs are dynamic, so either allow
-   `0.0.0.0/0` (simplest, accepts the risk) or add Vercel's published ranges.
+4. **Network Access** → *Add IP Address*. Vercel Functions use dynamic outbound addresses by
+   default, so a single workstation IP will not reliably allow a production connection. For a
+   production database, use a stable egress option such as [Vercel Static IPs](https://vercel.com/docs/networking/static-ips)
+   where the team's plan supports it. Avoid `0.0.0.0/0` unless you deliberately accept the
+   expanded exposure; it allows connection attempts from every public IP.
 5. **Deploy** → green **Connect** button → **Drivers** → copy the connection string.
 
 No manual collection setup is needed: `api/_lib.js` creates the indexes on first write, including
@@ -95,9 +98,8 @@ Every question is mandatory. `api/_lib.js` is the single source of truth for val
 page mirrors each server-side error back onto the matching input.
 
 The form collects: the team name, the lead's name, email, phone, year, department, gender and
-register number, the required partner's name/year/register number, one of 15 domains, T-shirt size,
-how they heard about the event, the rules checkbox, the **UPI transaction/UTR id**, and a
-**payment screenshot**.
+register number, the required partner's name/year/register number, one of 15 domains, how they
+heard about the event, the rules checkbox, the **UPI transaction/UTR id**, and a **payment screenshot**.
 
 The screenshot is downscaled in the browser through a canvas (max edge 1400 px, JPEG q0.82) before
 upload, so a 4 MB phone photo becomes roughly 200 KB. The server rejects anything over 2 MB, any

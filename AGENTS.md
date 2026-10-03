@@ -8,7 +8,7 @@ You are an expert full-stack web developer and brand designer. Build a complete,
 - Date: **Oct 8, 2026, 09:00 AM IST** (gates 08:00, registration ledger closes 07:00). Countdown targets this exact date/time.
 - Venue: **DEP-CYS Campus, SRM Valliammai Engineering College** — Address for footer: S.R.M. Nagar, Kattankulathur – 603203, Chengalpattu District, Tamil Nadu, India.
 - Eligibility: **DEP-CYS students only** — Year I, II, or III (college ID at check-in).
-- Format: **solo, or a team of exactly two**. Team lead = "Capo" (flavor label next to plain "Team Lead"). Duration: **3-hour sprint** (09:30–12:30). Ends with a **5-minute live showcase** per pod (from ~13:00).
+- Format: **teams of exactly two only; no solo entry**. Team lead = "Capo" (flavor label next to plain "Team Lead"). Duration: **3-hour sprint** (09:30–12:30). Ends with a **5-minute live showcase** per pod (from ~13:00).
 - **15 domains** chosen at registration — each with a 1–2 sentence description and 2–3 real, free practice platforms:
   1. Ethical Hacking (TryHackMe, Hack The Box, HackerOne)
   2. Penetration Testing (PortSwigger Academy, PentesterLab, VulnHub)
@@ -47,11 +47,11 @@ Cinematic 1970s mafia-drama aesthetic: dark, formal, dramatic — never violent 
 - The Cut: plaques for 1st, 2nd, 3rd (+ optional "Best Defence" special mention). Amounts TBA unless the user supplies them.
 
 # REGISTRATION FORM — the core deliverable, build it carefully
-- Solo / Team-of-2 toggle (not teams of more than two).
+- Team-of-two registration only; remove the Solo option (not teams of more than two).
 - Fields, all labeled plainly with a flavor label beside it ("Capo · Team Lead"):
   - **Pod Lead**: full name, college email, phone, year (I/II/III dropdown), roll number, domain (dropdown of the 15).
-  - **If team**: team name + partner's full name / year / roll number.
-  - Optional: T-shirt size (S/M/L/XL — "no preference"), and "how they heard" (Instagram / WhatsApp / Friend / Faculty / Other).
+  - **Required partner**: team name + partner's full name / year / roll number.
+  - "How they heard" (Instagram / WhatsApp / Friend / Faculty / Other). Do not collect T-shirt size.
   - Checkbox agreeing to The Code (link to the Code section).
 - Validation: required-field checks, email/phone format, team = exactly one partner — client-side (sufficient for a static single file). **Block duplicate submissions** (same email or same team name twice) using localStorage.
 - On valid submit: themed confirmation **"Welcome to the Family."** with a registration ID (e.g. `RH26-XXXX`), a **"Send Registration Email"** button (pre-filled `mailto:` to [CONTACT EMAIL] with all details in the body), and a **"Copy Details"** fallback button. This email is the real delivery mechanism — never drop it for a fake success state. Show real error states; never fail silently.
