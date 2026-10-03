@@ -12,7 +12,7 @@ already-built, deliberately vulnerable system and must find, patch and defend th
 | --- | --- |
 | `index.html` | The whole public site — markup, CSS and JS in one file. This is what visitors get. |
 | `admin.html` | Organiser dashboard. Asks for `ADMIN_KEY`, shows totals, proof viewer and Excel download. |
-| `hero-bg.jpg`, `superman-hero.jpg`, `about-bg.jpg`, `standards-bg.jpg`, `dc-contact-art.jpg`, `dc-contact-clear.jpg`, `srm-valliammai-logo.jpg` | Section backgrounds and art. All local — nothing is hotlinked. |
+| `hero-bg.jpg`, `superman-hero.jpg`, `about-bg.jpg`, `standards-bg.jpg`, `dc-contact-art.jpg`, `dc-contact-clear.jpg`, `srm-valliammai-logo.jpg`, `assets/superman-hero.png` | Section backgrounds and art. All local — nothing is hotlinked. |
 | `assets/villains/` | The 15 gallery cards, downloaded from the old CDN so the site no longer depends on a third-party host. |
 | `assets/upi-qr.jpeg` | UPI QR code shown in the payment step. |
 | `og-deck.png` | Open Graph preview image. |
