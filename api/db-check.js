@@ -16,8 +16,23 @@ module.exports = async function handler(req, res) {
     await db.command({ ping: 1 });
     return res.status(200).json({ ok: true });
   } catch (error) {
-    // Never include the URI or exception message in the response/log.
-    console.error("MongoDB ping failed", error && error.name ? error.name : "Error");
-    return res.status(503).json({ ok: false, error: error && error.name ? error.name : "DatabaseError" });
+    const serverErrors = [];
+    try {
+      for (const server of error && error.reason && error.reason.servers && error.reason.servers.values()
+        ? error.reason.servers.values()
+        : []) {
+        if (server && server.error) serverErrors.push(server.error);
+      }
+    } catch (_) {}
+    const cause = (error && error.cause) || serverErrors[0] || error;
+    const code = cause && typeof cause.code === "string" ? cause.code : undefined;
+    let failure = "database-error";
+    if (error && error.name === "MongoServerSelectionError") failure = "server-selection-timeout";
+    if (["ENOTFOUND", "EAI_AGAIN"].includes(code)) failure = "dns-resolution";
+    if (["ETIMEDOUT", "ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH"].includes(code)) failure = "network-reachability";
+    if (error && error.name === "MongoServerError" && (error.code === 18 || error.codeName === "AuthenticationFailed")) failure = "authentication";
+    const topology = error && error.reason && typeof error.reason.type === "string" ? error.reason.type : undefined;
+    console.error("MongoDB ping failed", error && error.name ? error.name : "Error", failure, code || "no-code");
+    return res.status(503).json({ ok: false, error: error && error.name ? error.name : "DatabaseError", failure, code, topology });
   }
 };
