@@ -285,7 +285,7 @@
   .featured-domain-grid:hover .domain-loop, .featured-domain-grid:focus-within .domain-loop { animation-play-state: paused; }
   @keyframes domainReel { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 8px)); } }
   @media (prefers-reduced-motion: reduce) { .domain-loop { animation: none; } }
-  @media (max-width: 900px) { .domain-loop { animation-duration: 58s; } }
+  @media (max-width: 900px) { .domain-loop { animation-duration: 112s; } }
 
   /* ---------- Mission cards ---------- */
   .event-card {
@@ -771,6 +771,18 @@
   }
   .pay-clear:hover { background: rgba(200,53,44,.14); }
   .submit-button[aria-busy="true"] { opacity: .6; pointer-events: none; }
+  /* ---------- Mobile layout fixes ---------- */
+  @media (max-width: 700px) {
+    .dc-hero { display: block; min-height: 100vh; padding: 110px 20px 24px; }
+    .hero-copy { width: 100%; max-width: 730px; }
+    .hero-count { position: relative; inset: auto; width: min(100%, 730px); margin: 22px auto 0; }
+  }
+  @media (max-width: 820px) {
+    .operations-layout { grid-template-columns: minmax(0, 1fr); gap: 30px; min-height: 0; padding: 34px 0 32px; align-items: start; }
+    .operations-brief { width: 100%; min-width: 0; }
+    .operations-rail { width: 100%; min-width: 0; height: auto; max-height: none; overflow: visible; padding-right: 0; }
+    .operations-rail-head { position: static; flex-wrap: wrap; }
+  }
   @media (max-width: 720px) {
     .pay-panel { grid-template-columns: 1fr; justify-items: center; }
     .pay-right { width: 100%; }
