@@ -27,7 +27,7 @@ front end, and no framework.
 ## Event facts
 
 - **Date:** Tuesday, 13 October 2026, 09:00 IST (gates 08:00, ledger closes 07:00)
-- **Format:** solo, or a duo (Capo/team lead + exactly one partner)
+- **Format:** teams of two only (Capo/team lead + exactly one partner)
 - **Eligibility:** DEP-CYS students, years I–III
 - **Fee:** ₹100 per participant (a duo pays ₹200)
 
@@ -56,7 +56,7 @@ See `.env.example`. Never commit real values.
 | `MAIL_NOTIFY_TO` | Optional. Comma-separated. CC/BCC yourself on every confirmation |
 | `MONGODB_URI` | Atlas connection string, e.g. `mongodb+srv://user:pass@cluster.mongodb.net` |
 | `MONGODB_DB` | Database name (default `reversehack2026`) |
-| `ADMIN_KEY` | Long random string that unlocks `/admin` and every `/api/admin/*` route |
+| `ADMIN_KEY` | Long random string that unlocks `/admin.html` and every `/api/admin/*` route |
 
 Generate a key with:
 
@@ -94,10 +94,10 @@ a unique index on the lowercased team name and another on participant emails.
 Every question is mandatory. `api/_lib.js` is the single source of truth for validation, and the
 page mirrors each server-side error back onto the matching input.
 
-The form collects: crew format (solo/duo), team name or solo alias, the lead's name, email, phone,
-year, department, gender and register number, the partner's name/year/register number (duo only),
-one of 15 domains, T-shirt size, how they heard about the event, the rules checkbox, the **UPI
-transaction/UTR id**, and a **payment screenshot**.
+The form collects: the team name, the lead's name, email, phone, year, department, gender and
+register number, the required partner's name/year/register number, one of 15 domains, T-shirt size,
+how they heard about the event, the rules checkbox, the **UPI transaction/UTR id**, and a
+**payment screenshot**.
 
 The screenshot is downscaled in the browser through a canvas (max edge 1400 px, JPEG q0.82) before
 upload, so a 4 MB phone photo becomes roughly 200 KB. The server rejects anything over 2 MB, any
@@ -121,8 +121,8 @@ guessable public URL for a screenshot.
 
 ## Organiser dashboard
 
-Open `/admin`, paste the `ADMIN_KEY`, and the dashboard shows registrations, participants, the
-solo/duo split and total fee collected. You can filter the table, open any payment screenshot, and
+Open `/admin.html`, paste the `ADMIN_KEY`, and the dashboard shows registrations, participants,
+format totals and total fee recorded. You can filter the table, open any payment screenshot, and
 download a workbook with three sheets:
 
 - **Participants** — one row per human. This is what the check-in desk wants.
@@ -130,6 +130,10 @@ download a workbook with three sheets:
 - **Summary** — headline totals.
 
 The key is held in `sessionStorage`, so it disappears when the tab closes.
+
+For direct database inspection, sign in to MongoDB Atlas and open **Data Explorer** → the database
+selected by `MONGODB_DB` (defaults to `reversehack2026` if unset) → the `registrations` collection.
+The website admin key and Atlas database credentials are separate; keep `MONGODB_URI` private.
 
 ## Local development
 

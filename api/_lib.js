@@ -189,13 +189,13 @@ function validateRegistration(body) {
     return { ok: false, fieldErrors: { _: ["Send a registration object."] } };
   }
 
-  const entryFormat = body.entryFormat === "duo" ? "duo" : "solo";
-  if (body.entryFormat !== "solo" && body.entryFormat !== "duo") {
-    fail("entryFormat", "Choose SOLO or TEAM OF TWO.");
+  const entryFormat = "duo";
+  if (body.entryFormat !== "duo") {
+    fail("entryFormat", "Only teams of two may register.");
   }
 
   const teamName = clean(body.teamName, 60);
-  if (teamName.length < 2) fail("teamName", "Enter a team name or solo alias.");
+  if (teamName.length < 2) fail("teamName", "Enter a team name.");
 
   const leader = {
     fullName: clean(body.leader?.fullName, 80),

@@ -985,7 +985,7 @@ Error generating stack: `+l.message+`
       <p class="hero-meta">
         <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Oct 13, 2026 · 09:00 IST</span>
         <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>DEP-CYS Campus</span>
-        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3.5 19c.6-3 2.4-4.5 5.5-4.5s4.9 1.5 5.5 4.5M14 15c3.5-.2 5.6 1.1 6.2 4"></path></svg>Solo / duo entry</span>
+        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3.5 19c.6-3 2.4-4.5 5.5-4.5s4.9 1.5 5.5 4.5M14 15c3.5-.2 5.6 1.1 6.2 4"></path></svg>Teams of two only</span>
         <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Doors 08:00 · Ledger seals 07:00</span>
       </p>
     </div>
@@ -1020,7 +1020,7 @@ Error generating stack: `+l.message+`
         <p>Hosted at SRM Valliammai Engineering College for curious builders, security learners, and students who want to turn technical instincts into practical judgement.</p>
         <div class="about-facts">
           <div class="about-fact"><strong>YEAR I–III</strong><span>Open to eligible students across departments.</span></div>
-          <div class="about-fact"><strong>SOLO / DUO</strong><span>Enter alone or bring one teammate.</span></div>
+          <div class="about-fact"><strong>TEAM OF TWO</strong><span>Register with exactly one teammate.</span></div>
           <div class="about-fact"><strong>15 DOMAINS</strong><span>Choose a practice ground that fits your curiosity.</span></div>
           <div class="about-fact"><strong>ONE MISSION</strong><span>Reverse. Exploit. Defend.</span></div>
         </div>
@@ -1060,7 +1060,7 @@ Error generating stack: `+l.message+`
           <div class="operations-rail-head"><span>RULES &amp; REGULATIONS</span><small>01—10 / CONTROLLED</small></div>
           <div class="rules-board">
             <article class="operation-rule"><span>01 / ACCESS</span><strong>Bring your college ID to check-in.</strong><small>Identity verified before entry.</small></article>
-            <article class="operation-rule"><span>02 / POD</span><strong>Register solo or as a team of two.</strong><small>One registration record per pod.</small></article>
+            <article class="operation-rule"><span>02 / POD</span><strong>Register as a team of two only.</strong><small>One registration record per pod.</small></article>
             <article class="operation-rule"><span>03 / SCOPE</span><strong>Work only inside the assigned environment.</strong><small>External systems remain out of scope.</small></article>
             <article class="operation-rule"><span>04 / CONDUCT</span><strong>Respect the scope, the system, and every participant.</strong><small>Professional conduct is non-negotiable.</small></article>
             <article class="operation-rule"><span>05 / BOUNDARY</span><strong>Do not probe external systems or other teams.</strong><small>Stay within the approved mission boundary.</small></article>
@@ -1093,7 +1093,7 @@ Error generating stack: `+l.message+`
         <h3>Build your <em>dossier.</em></h3>
         <p>Complete the participant record below. Your details stay focused, readable, and ready for the mission desk.</p>
         <div class="register-steps">
-          <div class="register-step"><b>01</b><div><strong>CHOOSE FORMAT</strong><small>Enter solo or with one teammate.</small></div></div>
+          <div class="register-step"><b>01</b><div><strong>TEAM OF TWO</strong><small>Register as one lead plus one teammate.</small></div></div>
           <div class="register-step"><b>02</b><div><strong>IDENTIFY CREW</strong><small>Share the lead participant details.</small></div></div>
           <div class="register-step"><b>03</b><div><strong>SELECT DOMAIN</strong><small>Lock one cybersecurity practice ground.</small></div></div>
           <div class="register-step"><b>04</b><div><strong>CONFIRM ENTRY</strong><small>Accept the rules and submit the record.</small></div></div>
@@ -1102,18 +1102,14 @@ Error generating stack: `+l.message+`
       </aside>
       <div id="regFormWrap">
         <form class="mission-form" id="regForm" novalidate="">
-          <div class="form-section-head"><span>01 · CREW FORMAT</span><p>Select your participation mode and reserve a unique seat.</p></div>
-          <div class="mode-toggle" role="group" aria-label="Choose solo or team of two">
-            <button type="button" class="mode-btn selected" data-mode="solo" aria-pressed="true" data-manus_clickable="true" data-manus_click_id="53">SOLO</button>
-            <button type="button" class="mode-btn" data-mode="team" aria-pressed="false" data-manus_clickable="true" data-manus_click_id="54">TEAM OF TWO</button>
-          </div>
-          <p class="panel-note" id="partnerNote">A pod of two. The registrant below is the Capo (team lead); your partner is the Soldato.</p>
+          <div class="form-section-head"><span>01 · TEAM OF TWO</span><p>Every registration includes exactly two participants.</p></div>
+          <p class="panel-note on">The person below is the team lead. Enter exactly one partner’s details in the next section.</p>
 
           <div id="teamFields" class="form-grid" style="display:grid;margin-bottom:18px">
             <div class="field">
-              <span>TEAM NAME / SOLO ALIAS <i>*</i></span>
+              <span>TEAM NAME <i>*</i></span>
               <input id="f-team" name="team" type="text" autocomplete="off" placeholder="e.g. Batman_01 or The Silent Circle" aria-describedby="e-team">
-              <small id="e-team">Required for every entry. Solo participants must enter a unique team name or alias for the registry.</small>
+              <small id="e-team">Enter a unique team name for your pair.</small>
             </div>
           </div>
 
@@ -1208,7 +1204,7 @@ Error generating stack: `+l.message+`
             </div>
           </div>
 
-          <div id="partnerBlock" hidden style="display:none">
+          <div id="partnerBlock">
             <div class="form-section-head"><span>03 · PARTNER</span><p>Exactly one partner per pod.</p></div>
             <div class="form-grid">
               <div class="field">
@@ -1248,7 +1244,7 @@ Error generating stack: `+l.message+`
               <p class="pay-scan">Scan with any UPI app</p>
             </div>
             <div class="pay-right">
-              <div class="pay-amount"><span>ENTRY FEE</span><strong id="payAmount">&#8377;100</strong><small id="payAmountNote">per participant</small></div>
+              <div class="pay-amount"><span>ENTRY FEE</span><strong id="payAmount">&#8377;200</strong><small id="payAmountNote">for 2 participants</small></div>
               <dl class="pay-meta">
                 <div><dt>PAYEE</dt><dd>Whitehat Club, DEP-CYS</dd></div>
               </dl>
@@ -1334,10 +1330,10 @@ Error generating stack: `+l.message+`
           <div><span>DATE</span><strong>October 13, 2026</strong></div>
           <div><span>TIME</span><strong>09:00 AM IST</strong></div>
           <div><span>LOCATION</span><strong>DEP-CYS Campus</strong></div>
-          <div><span>TEAM SIZE</span><strong>Solo or duo</strong></div>
+          <div><span>TEAM SIZE</span><strong>Team of two</strong></div>
           <div><span>PARTICIPANT CAP</span><strong>30 participants</strong></div>
           <div><span>DURATION</span><strong>3 hours</strong></div>
-          <div><span>REGISTRATION FEE</span><strong>₹ 100 per team</strong></div>
+          <div><span>REGISTRATION FEE</span><strong>₹ 200 per team (₹100/person)</strong></div>
         </div>
         <p class="full-dossier-note">SECURE YOUR SLOT · CHOOSE YOUR DOMAIN · ENTER THE OPERATION</p>
         <div class="dossier-actions">
@@ -1699,9 +1695,7 @@ Error generating stack: `+l.message+`
 
   /* ---------- registration ---------- */
   var form = $("#regForm"), confirmPanel = $("#regSuccess");
-  var teamBlock = $("#teamFields"), partnerBlock = $("#partnerBlock"), partnerNote = $("#partnerNote");
-  var modeBtns = $$(".mode-btn");
-  var mode = "solo";
+  var mode = "team";
   var LS_KEY = "rh26_registrations";
   var regs = [];
   try { regs = JSON.parse(localStorage.getItem(LS_KEY) || "[]"); } catch (e) { regs = []; }
@@ -1727,7 +1721,7 @@ Error generating stack: `+l.message+`
 
   var HEARD_ABOUT = ["Instagram", "WhatsApp", "Friend or senior", "Faculty", "Flyer / poster", "Other"];
 
-  /* Entry fee. A duo pays double, so the panel total tracks the mode toggle. */
+  /* Entry fee is fixed for the required two-person team. */
   var FEE_PER_PERSON = 100;
   var PROOF_MAX_BYTES = 2 * 1024 * 1024;
   var PROOF_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -1743,22 +1737,8 @@ Error generating stack: `+l.message+`
   function showAlert(msg) { var a = $("#formAlert"); a.textContent = msg; a.classList.add("on"); }
   function clearAlert() { $("#formAlert").classList.remove("on"); }
 
-  modeBtns.forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      mode = btn.dataset.mode;
-      modeBtns.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); b.classList.toggle("selected", b === btn); });
-      var isTeam = mode === "team";
-      teamBlock.style.display = "grid";
-      teamBlock.hidden = false;
-      partnerBlock.style.display = isTeam ? "block" : "none";
-      partnerBlock.hidden = !isTeam;
-      partnerNote.classList.toggle("on", isTeam);
-      updateFeePanel();
-    });
-  });
-
   function updateFeePanel() {
-    var heads = mode === "team" ? 2 : 1;
+    var heads = 2;
     var amountEl = $("#payAmount"), noteEl = $("#payAmountNote");
     if (amountEl) amountEl.textContent = "\u20b9" + (heads * FEE_PER_PERSON);
     if (noteEl) noteEl.textContent = heads > 1 ? "for " + heads + " participants" : "per participant";
@@ -1928,7 +1908,6 @@ Error generating stack: `+l.message+`
 
     var ok = true;
     Object.keys(FIELDS).forEach(function (key) {
-      if (mode === "solo" && (key === "pname" || key === "pyear" || key === "proll")) return;
       var el = $(FIELDS[key].el);
       if (!el) return;
       var chk = FIELDS[key].check(el.type === "checkbox" ? el.checked : el.value);
@@ -1944,7 +1923,7 @@ Error generating stack: `+l.message+`
     }
 
     var payload = {
-      entryFormat: mode === "team" ? "duo" : "solo",
+      entryFormat: "duo",
       teamName: team.team,
       leader: {
         fullName: data.name,
@@ -1955,9 +1934,7 @@ Error generating stack: `+l.message+`
         gender: data.gender,
         rollNumber: data.roll
       },
-      partner: mode === "team"
-        ? { fullName: team.pname, year: team.pyear, rollNumber: team.proll }
-        : null,
+      partner: { fullName: team.pname, year: team.pyear, rollNumber: team.proll },
       domain: data.domain,
       tshirtSize: data.tshirt,
       heardAbout: data.heard,
@@ -2015,7 +1992,7 @@ Error generating stack: `+l.message+`
       "= ".repeat(20),
       "Family ID: " + id,
       "",
-      "Pod: " + (mode === "solo" ? "SOLO" : "TEAM OF TWO"),
+      "Pod: TEAM OF TWO",
       "Domain: " + data.domain,
       "Capo (Team Lead): " + data.name,
       "Year: " + data.year,
@@ -2028,8 +2005,8 @@ Error generating stack: `+l.message+`
       "Heard about: " + data.heard,
       "UPI UTR: " + data.utr
     ];
-    lines.push("", (mode === "solo" ? "Solo alias: " : "Team: ") + team.team);
-    if (mode === "team") lines.push("Soldato (Partner): " + team.pname + " (Year " + team.pyear + ", " + team.proll + ")");
+    lines.push("", "Team: " + team.team);
+    lines.push("Partner: " + team.pname + " (Year " + team.pyear + ", " + team.proll + ")");
     lines.push("", "I confirm the details above and accept The Code of the Reverse Hackathon 2026.");
 
     var subject = "Registration — Reverse Hackathon 2026 — " + team.team;
@@ -2141,8 +2118,8 @@ Error generating stack: `+l.message+`
       theme: 'The event follows a DC-inspired cybersecurity mission theme: comic-book heroes, controlled environments, defensive thinking, and professional incident-response discipline.',
       event: 'Reverse Hackathon 2026 is a three-hour defensive cybersecurity sprint presented by The Whitehatians and the Department of Cyber Security at SRM Valliammai Engineering College.',
       format: 'Participants choose a cybersecurity domain, work through the assigned challenge format, document their evidence, and complete a final handover before the cutoff.',
-      size: 'You can register solo or as a team of two. One registration record is created for each participant pod.',
-      eligibility: 'Students from Year I to Year III can participate across eligible departments. You may enter solo or as a team of two.'
+      size: 'Each registration must include a team of two. One record is created per team.',
+      eligibility: 'Students from Year I to Year III can participate across eligible departments in teams of two.'
     };
     function setOpen(open) {
       panel.hidden = !open;
