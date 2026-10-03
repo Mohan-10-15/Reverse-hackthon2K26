@@ -73,7 +73,7 @@ export default function CodeSection() {
 
           <div className="relative">
             <p className="font-typewriter text-[11px] uppercase tracking-[0.3em] text-ink/70 sm:text-xs">
-              Registered this day of our Lord, Anno 2K26
+              Registered this day of our Lord, Anno 2026
             </p>
             <h3 className="mt-2 font-head text-3xl font-bold text-ink sm:text-4xl">
               The Laws of the House

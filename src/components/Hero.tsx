@@ -27,7 +27,7 @@ export function CountdownBoxes({ target }: { target: Date }) {
     <div
       className="flex items-stretch gap-2 sm:gap-3"
       role="timer"
-      aria-label={`Counting down to OMERTÀ 2K26 on ${formatEventDate()}`}
+      aria-label={`Counting down to Reverse Hackathon 2026 on ${formatEventDate()}`}
     >
       {cells.map((c, i) => (
         <div key={c.label} className="flex items-stretch gap-2 sm:gap-3">
@@ -86,9 +86,9 @@ export default function Hero() {
       </motion.p>
 
       <motion.h1 {...fade(0.25)} className="relative mt-6">
-        <span className="sr-only">OMERTÀ 2K26</span>
+        <span className="sr-only">Reverse Hackathon 2026</span>
         <span aria-hidden className="block font-display text-5xl font-black leading-none tracking-[0.08em] text-parchment sm:text-7xl lg:text-8xl">
-          {"OMERTÀ".split("").map((ch, i) => (
+          {"RH".split("").map((ch, i) => (
             <motion.span
               key={i}
               className="inline-block"
@@ -101,7 +101,7 @@ export default function Hero() {
           ))}
         </span>
         <span className="gold-text mt-3 block font-head text-3xl font-bold tracking-[0.5em] sm:text-5xl">
-          2K26
+          2026
         </span>
       </motion.h1>
 

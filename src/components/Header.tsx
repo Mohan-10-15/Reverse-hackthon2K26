@@ -27,8 +27,8 @@ export default function Header() {
             O
           </span>
           <span className="font-display text-lg font-bold tracking-[0.2em] text-parchment">
-            OMERTÀ
-            <span className="ml-2 text-sm font-normal tracking-[0.3em] text-gold">2K26</span>
+            RH
+            <span className="ml-2 text-sm font-normal tracking-[0.3em] text-gold">2026</span>
           </span>
         </a>
 
