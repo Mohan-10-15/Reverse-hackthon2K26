@@ -285,6 +285,7 @@
   .featured-domain-grid { display: flex; gap: 0; margin-top: 46px; overflow: hidden; position: relative; padding: 8px 0 18px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
   .domain-loop { display: flex; gap: 16px; width: max-content; animation: domainReel 112s linear infinite; will-change: transform; }
   .featured-domain-grid:hover .domain-loop, .featured-domain-grid:focus-within .domain-loop { animation-play-state: paused; }
+  .featured-domain-grid.resume-after-dismiss .domain-loop { animation-play-state: running; }
   @keyframes domainReel { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 8px)); } }
   @media (prefers-reduced-motion: reduce) { .domain-loop { animation: none; } }
   @media (max-width: 900px) { .domain-loop { animation-duration: 112s; } }
@@ -1449,6 +1450,8 @@ Error generating stack: `+l.message+`
   function openModal(num) {
     var d = byNum(num);
 
+    if (featuredGrid) featuredGrid.classList.remove("resume-after-dismiss");
+
     modalTitle.textContent = d.title;
     modalTitle.style.removeProperty("color");
     modalTitle.removeAttribute("data-color");
@@ -1465,11 +1468,27 @@ Error generating stack: `+l.message+`
     var f = $("#missionClose");
     if (f) f.focus();
   }
+  function clearCarouselResumeIfOutside() {
+    if (!featuredGrid || !featuredGrid.classList.contains("resume-after-dismiss")) return;
+    var focusInside = featuredGrid.contains(document.activeElement);
+    var pointerInside = featuredGrid.matches(":hover");
+    if (!focusInside && !pointerInside) featuredGrid.classList.remove("resume-after-dismiss");
+  }
+  if (featuredGrid) {
+    featuredGrid.addEventListener("pointerleave", clearCarouselResumeIfOutside);
+    featuredGrid.addEventListener("focusout", function (e) {
+      if (!featuredGrid.contains(e.relatedTarget)) clearCarouselResumeIfOutside();
+    });
+  }
   function closeModal() {
     modal.hidden = true;
     document.body.style.overflow = "";
     var opener = document.querySelector("[data-lastopen]");
-    if (opener) { opener.removeAttribute("data-lastopen"); opener.focus(); }
+    if (opener) {
+      opener.removeAttribute("data-lastopen");
+      if (featuredGrid && featuredGrid.contains(opener)) featuredGrid.classList.add("resume-after-dismiss");
+      opener.focus();
+    }
   }
 
   function openDirectory() {
