@@ -723,56 +723,6 @@
   .mission-chat-foot a:hover { color: var(--cyan); }
   @media (max-width: 620px) { .mission-chat-launcher { right: 16px; bottom: 16px; width: 53px; height: 53px; } .mission-chat-panel { right: 16px; bottom: 82px; } }
 
-  /* ---- Entry fee payment panel (added for MongoDB-backed registration) ---- */
-  .pay-panel {
-    display: grid; grid-template-columns: 200px 1fr; gap: 22px; align-items: start;
-    padding: 18px; margin: 0 0 18px;
-    border: 1px solid rgba(240,183,74,.28); border-radius: 4px;
-    background: linear-gradient(180deg, rgba(240,183,74,.06), rgba(9,17,28,.5));
-  }
-  .pay-left { text-align: center; }
-  .pay-qr {
-    width: 188px; height: 188px; padding: 8px; background: #fff; border-radius: 3px;
-    image-rendering: -webkit-optimize-contrast;
-  }
-  .pay-scan { margin: 9px 0 0; color: #9caaba; font-size: 9px; letter-spacing: .1em; }
-  .pay-amount { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; margin-bottom: 12px; }
-  .pay-amount span { color: var(--gold); font-size: 9px; letter-spacing: .14em; }
-  .pay-amount strong { color: #f7f1df; font: 700 30px var(--serif); line-height: 1; }
-  .pay-amount small { color: #8da2b2; font-size: 9px; letter-spacing: .08em; }
-  .pay-meta { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin: 0 0 14px; }
-  .pay-meta > div { border-left: 2px solid rgba(240,183,74,.4); padding-left: 10px; min-width: 0; }
-  .pay-meta dt { color: #8da2b2; font-size: 9px; letter-spacing: .12em; }
-  .pay-meta dd {
-    margin: 3px 0 0; color: #dbe7ed; font: 13px var(--serif);
-    overflow-wrap: anywhere; user-select: all;
-  }
-  .field input[type="file"] { padding: 9px 10px; cursor: pointer; }
-  .field input[type="file"]::file-selector-button {
-    font: inherit; font-size: 10px; letter-spacing: .08em; color: var(--ink);
-    background: var(--gold); border: 0; border-radius: 2px;
-    padding: 7px 11px; margin-right: 10px; cursor: pointer;
-  }
-  .pay-preview {
-    display: flex; gap: 13px; align-items: center; margin-top: 13px;
-    padding: 11px; border: 1px dashed rgba(247,241,223,.22); border-radius: 3px;
-  }
-  .pay-preview img {
-    width: 76px; height: 76px; object-fit: cover; flex: none;
-    border-radius: 2px; border: 1px solid rgba(247,241,223,.18);
-  }
-  .pay-preview-meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .pay-preview-meta strong {
-    color: #dbe7ed; font-size: 11px; overflow-wrap: anywhere;
-  }
-  .pay-preview-meta small { color: #8da2b2; font-size: 9px; letter-spacing: .06em; }
-  .pay-clear {
-    align-self: flex-start; margin-top: 4px; font: inherit; font-size: 9px;
-    letter-spacing: .1em; color: #ff9d97; background: none;
-    border: 1px solid rgba(200,53,44,.45); border-radius: 2px;
-    padding: 4px 9px; cursor: pointer;
-  }
-  .pay-clear:hover { background: rgba(200,53,44,.14); }
   .submit-button[aria-busy="true"] { opacity: .6; pointer-events: none; }
   /* ---------- Mobile layout fixes ---------- */
   @media (max-width: 700px) {
@@ -785,12 +735,6 @@
     .operations-brief { width: 100%; min-width: 0; }
     .operations-rail { width: 100%; min-width: 0; height: auto; max-height: none; overflow: visible; padding-right: 0; }
     .operations-rail-head { position: static; flex-wrap: wrap; }
-  }
-  @media (max-width: 720px) {
-    .pay-panel { grid-template-columns: 1fr; justify-items: center; }
-    .pay-right { width: 100%; }
-    .pay-meta { grid-template-columns: 1fr; }
-    .pay-amount { justify-content: center; }
   }
 </style>
 <script>document.documentElement.classList.add('landing-active');</script>
@@ -1233,37 +1177,7 @@ Error generating stack: `+l.message+`
           </label>
           <p class="field-agree-err" id="e-agree" style="display:none;color:#ff8079;font-size:9px;margin:8px 0 0">Sign the code — accept the rules to enter the ledger.</p>
 
-          <div class="form-section-head"><span>05 &mdash; ENTRY FEE PAYMENT</span><p>Pay per participant, then attach the receipt.</p></div>
-          <div class="pay-panel">
-            <div class="pay-left">
-              <img class="pay-qr" src="assets/upi-qr.jpeg" width="188" height="188" alt="UPI QR code for the Reverse Hackathon 2026 registration fee" loading="lazy" decoding="async">
-              <p class="pay-scan">Scan with any UPI app</p>
-            </div>
-            <div class="pay-right">
-              <div class="pay-amount"><span>ENTRY FEE</span><strong id="payAmount">&#8377;100</strong><small id="payAmountNote">per participant</small></div>
-              <dl class="pay-meta">
-                <div><dt>PAYEE</dt><dd>Whitehat Club, DEP-CYS</dd></div>
-              </dl>
-              <div class="field">
-                <span>UPI TRANSACTION / UTR ID <i>*</i></span>
-                <input id="f-utr" name="utr" type="text" autocomplete="off" placeholder="e.g. 426781234567" aria-describedby="e-utr" required maxlength="40">
-                <small id="e-utr">Enter the UTR / reference number from your UPI app. Letters, numbers and hyphens only.</small>
-              </div>
-              <div class="field" style="margin-top:14px">
-                <span>PAYMENT SCREENSHOT <i>*</i></span>
-                <input id="f-proof" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="e-proof" required>
-                <small id="e-proof">Upload the successful payment screenshot (JPG, PNG or WebP, under 2 MB).</small>
-              </div>
-              <div class="pay-preview" id="payPreview" hidden>
-                <img id="payPreviewImg" alt="Preview of the uploaded payment screenshot">
-                <div class="pay-preview-meta">
-                  <strong id="payPreviewName">&nbsp;</strong>
-                  <small id="payPreviewSize">&nbsp;</small>
-                  <button type="button" id="payClear" class="pay-clear">Remove</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p class="form-footnote">Registration is free. No payment or proof is required.</p>
 
           <button class="button primary submit-button" type="submit" data-manus_clickable="true" data-manus_click_id="68">Submit registration &rarr;</button>
           <p class="form-alert" id="formAlert" role="alert"></p>
@@ -1276,7 +1190,7 @@ Error generating stack: `+l.message+`
         </span>
         <p class="eyebrow gold"><span></span>REGISTRATION RECEIVED</p>
         <h2>Welcome to <em>the operation.</em></h2>
-        <p>Your entry and payment proof are stored in the mission registry. Keep this ID safe — quote it at the check-in desk.</p>
+        <p>Your registration is stored in the mission registry. Entry is free; no payment or receipt is required. Keep this ID safe for check-in.</p>
         <div class="registration-id"><span>REGISTRATION ID</span><strong id="regId">RH26-XXXX</strong></div>
         <div class="register-actions">
           <a class="button primary" id="mailBtn" href="#" aria-label="Send registration email">✉ Send a copy by email</a>
@@ -1328,7 +1242,7 @@ Error generating stack: `+l.message+`
           <div><span>ENTRY FORMAT</span><strong>Solo or duo</strong></div>
           <div><span>PARTICIPANT CAP</span><strong>30 participants</strong></div>
           <div><span>DURATION</span><strong>3 hours</strong></div>
-          <div><span>REGISTRATION FEE</span><strong>₹100 per participant (₹100 solo / ₹200 duo)</strong></div>
+          <div><span>ENTRY FEE</span><strong>Free — no payment required</strong></div>
         </div>
         <p class="full-dossier-note">SECURE YOUR SLOT · CHOOSE YOUR DOMAIN · ENTER THE OPERATION</p>
         <div class="dossier-actions">
@@ -1711,17 +1625,11 @@ Error generating stack: `+l.message+`
     pname: { el: "#f-pname", check: function (v) { return v.trim().length >= 2; } },
     pyear: { el: "#f-pyear", check: function (v) { return ["I", "II", "III"].indexOf(v) !== -1; } },
     proll: { el: "#f-proll", check: function (v) { return /^[A-Za-z0-9][A-Za-z0-9/-]{2,39}$/.test(v.trim()); } },
-    heard: { el: "#f-heard", check: function (v) { return HEARD_ABOUT.indexOf(v) !== -1; } },
-    utr: { el: "#f-utr", check: function (v) { return /^[A-Za-z0-9-]{6,40}$/.test(v.trim()); } }
+    heard: { el: "#f-heard", check: function (v) { return HEARD_ABOUT.indexOf(v) !== -1; } }
   };
 
   var HEARD_ABOUT = ["Instagram", "WhatsApp", "Friend or senior", "Faculty", "Flyer / poster", "Other"];
 
-  /* Entry fee is charged per participant; a Duo pays twice the Solo fee. */
-  var FEE_PER_PERSON = 100;
-  var PROOF_MAX_BYTES = 2 * 1024 * 1024;
-  var PROOF_TYPES = ["image/jpeg", "image/png", "image/webp"];
-  var proofState = null;    // { filename, mimeType, dataBase64 }
   var submitting = false;
 
   function setFieldError(el, bad) {
@@ -1733,12 +1641,6 @@ Error generating stack: `+l.message+`
   function showAlert(msg) { var a = $("#formAlert"); a.textContent = msg; a.classList.add("on"); }
   function clearAlert() { $("#formAlert").classList.remove("on"); }
 
-  function updateFeePanel() {
-    var heads = mode === "team" ? 2 : 1;
-    var amountEl = $("#payAmount"), noteEl = $("#payAmountNote");
-    if (amountEl) amountEl.textContent = "\u20b9" + (heads * FEE_PER_PERSON);
-    if (noteEl) noteEl.textContent = heads > 1 ? "for " + heads + " participants" : "per participant";
-  }
   modeBtns.forEach(function (btn) {
     btn.addEventListener("click", function () {
       mode = btn.getAttribute("data-mode");
@@ -1758,104 +1660,8 @@ Error generating stack: `+l.message+`
         });
       }
       clearAlert();
-      updateFeePanel();
     });
   });
-
-  /* ---- payment screenshot: validate, downscale, preview ---- */
-  var proofInput = $("#f-proof"), proofPreview = $("#payPreview");
-  var proofImg = $("#payPreviewImg"), proofName = $("#payPreviewName"), proofSize = $("#payPreviewSize");
-
-  function proofField() { return proofInput ? proofInput.closest(".field") : null; }
-  function showProofError(msg) {
-    var small = $("#e-proof");
-    if (small) small.textContent = msg;
-    var wrap = proofField();
-    if (wrap) wrap.classList.add("has-error");
-  }
-  function clearProofError() {
-    var small = $("#e-proof");
-    if (small) small.textContent = "Upload the successful payment screenshot (JPG, PNG or WebP, under 2 MB).";
-    var wrap = proofField();
-    if (wrap) wrap.classList.remove("has-error");
-  }
-  function humanSize(bytes) {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  }
-  function clearProof() {
-    proofState = null;
-    if (proofInput) proofInput.value = "";
-    if (proofPreview) proofPreview.hidden = true;
-    if (proofImg) proofImg.removeAttribute("src");
-    clearProofError();
-  }
-
-  /* Re-encodes through a canvas so a 4 MB phone screenshot becomes a small
-     JPEG. Falls back to the original bytes when canvas is unavailable. */
-  function shrinkToBase64(file) {
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onerror = function () { reject(new Error("read-failed")); };
-      reader.onload = function () {
-        var dataUrl = String(reader.result);
-        var img = new Image();
-        img.onerror = function () { resolve(dataUrl); };
-        img.onload = function () {
-          try {
-            var scale = Math.min(1, 1400 / Math.max(img.width, img.height));
-            var w = Math.max(1, Math.round(img.width * scale));
-            var h = Math.max(1, Math.round(img.height * scale));
-            var canvas = document.createElement("canvas");
-            canvas.width = w; canvas.height = h;
-            var ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, w, h);
-            ctx.drawImage(img, 0, 0, w, h);
-            var out = canvas.toDataURL("image/jpeg", 0.82);
-            resolve(out.length < dataUrl.length ? out : dataUrl);
-          } catch (e) {
-            resolve(dataUrl);
-          }
-        };
-        img.src = dataUrl;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function handleProof(file) {
-    clearProofError();
-    if (!file) { clearProof(); return; }
-    if (PROOF_TYPES.indexOf(file.type) === -1) {
-      showProofError("That file type is not supported. Upload a JPG, PNG or WebP image.");
-      clearProof();
-      return;
-    }
-    if (file.size > PROOF_MAX_BYTES) {
-      showProofError("That screenshot is " + humanSize(file.size) + ". Keep it under 2 MB.");
-      clearProof();
-      return;
-    }
-    shrinkToBase64(file).then(function (dataUrl) {
-      proofState = {
-        filename: file.name || "payment-screenshot",
-        mimeType: file.type,
-        dataBase64: dataUrl.slice(dataUrl.indexOf(",") + 1)
-      };
-      if (proofImg) proofImg.src = dataUrl;
-      if (proofName) proofName.textContent = proofState.filename;
-      if (proofSize) proofSize.textContent = humanSize(file.size);
-      if (proofPreview) proofPreview.hidden = false;
-    }).catch(function () {
-      showProofError("That file could not be read. Try attaching it again.");
-      clearProof();
-    });
-  }
-
-  if (proofInput) proofInput.addEventListener("change", function () { handleProof(proofInput.files[0]); });
-  if ($("#payClear")) $("#payClear").addEventListener("click", clearProof);
 
   var agreeWrap = $("#agreeWrap");
   agreeWrap.addEventListener("click", function () {
@@ -1869,8 +1675,6 @@ Error generating stack: `+l.message+`
     if (path === "heardAbout") return $("#f-heard");
     if (path === "domain") return $("#f-domain");
     if (path === "teamName") return $("#f-team");
-    if (path === "payment.upiTransactionId") return $("#f-utr");
-    if (path.indexOf("payment.screenshot") === 0) return proofInput;
     if (path.indexOf("partner.") === 0) {
       var pt = path.slice(8);
       return $("#f-p" + (pt === "rollNumber" ? "roll" : pt === "fullName" ? "name" : pt));
@@ -1899,7 +1703,6 @@ Error generating stack: `+l.message+`
     if (submitting) return;
     clearAlert();
     $("#e-agree").style.display = "none";
-    clearProofError();
 
     var data = {
       mode: mode,
@@ -1912,7 +1715,6 @@ Error generating stack: `+l.message+`
       roll: $("#f-roll").value.trim(),
       domain: $("#f-domain").value,
       heard: $("#f-heard").value,
-      utr: $("#f-utr").value.trim(),
       agree: $("#f-agree").checked
     };
     var team = { team: $("#f-team").value.trim() };
@@ -1933,12 +1735,6 @@ Error generating stack: `+l.message+`
     if (!$("#f-agree").checked) { $("#e-agree").style.display = "block"; ok = false; }
     if (!ok) { showAlert("A few fields need attention — the message beneath each one tells you what."); return; }
 
-    if (!proofState) {
-      showProofError("Attach the payment screenshot so the desk can verify your entry.");
-      if (proofInput) proofInput.focus();
-      return;
-    }
-
     var payload = {
       entryFormat: mode === "team" ? "duo" : "solo",
       teamName: team.team,
@@ -1956,15 +1752,7 @@ Error generating stack: `+l.message+`
         : null,
       domain: data.domain,
       heardAbout: data.heard,
-      agree: data.agree,
-      payment: {
-        upiTransactionId: data.utr,
-        screenshot: {
-          filename: proofState.filename,
-          mimeType: proofState.mimeType,
-          dataBase64: proofState.dataBase64
-        }
-      }
+      agree: data.agree
     };
 
     var button = form.querySelector('button[type="submit"]');
@@ -2020,7 +1808,7 @@ Error generating stack: `+l.message+`
       "Email: " + data.email,
       "Phone: " + data.phone,
       "Heard about: " + data.heard,
-      "UPI UTR: " + data.utr
+      "Entry fee: Free — no payment required"
     ];
     lines.push("", (data.mode === "team" ? "Team: " : "Solo alias: ") + team.team);
     if (data.mode === "team") lines.push("Partner: " + team.pname + " (Year " + team.pyear + ", " + team.proll + ")");
@@ -2090,7 +1878,6 @@ Error generating stack: `+l.message+`
     if (el.tagName === "SELECT") el.addEventListener("change", clear);
   });
 
-  updateFeePanel();
 })();
 </script>
 <button class="mission-chat-launcher" id="missionChatLauncher" type="button" aria-label="Open event assistant" aria-expanded="false" aria-controls="missionChatPanel">
@@ -2103,9 +1890,9 @@ Error generating stack: `+l.message+`
     <button class="mission-chat-close" id="missionChatClose" type="button" aria-label="Close assistant">×</button>
   </div>
   <div class="mission-chat-body">
-    <p class="mission-chat-message">Say <strong>hi</strong>, ask about <strong>theme, event, payment, format</strong>, or check who can participate.</p>
+    <p class="mission-chat-message">Say <strong>hi</strong>, ask about <strong>theme, event, free registration, format</strong>, or check who can participate.</p>
     <div class="mission-chat-quick" role="list">
-      <button type="button" data-chat-topic="payment">Payment</button>
+      <button type="button" data-chat-topic="fee">Entry fee</button>
       <button type="button" data-chat-topic="theme">Theme</button>
       <button type="button" data-chat-topic="event">Event</button>
       <button type="button" data-chat-topic="format">Format</button>
@@ -2130,8 +1917,8 @@ Error generating stack: `+l.message+`
     var chatInput = document.getElementById('missionChatInput');
     if (!launcher || !panel) return;
     var replies = {
-      greeting: 'Hi! Welcome to Reverse Hackathon 2026. I can help with the event, theme, payment, format, team size, and eligibility. How can I help you?',
-      payment: 'Payment instructions, if applicable, are provided during registration. If a payment fails or you need confirmation, contact Anesh directly at <a href="tel:+917339614244">+91 73396 14244</a>.',
+      greeting: 'Hi! Welcome to Reverse Hackathon 2026. I can help with the event, theme, free registration, format, team size, and eligibility. How can I help you?',
+      fee: 'Registration is free. There is no entry fee, and no payment or receipt is required.',
       theme: 'The event follows a DC-inspired cybersecurity mission theme: comic-book heroes, controlled environments, defensive thinking, and professional incident-response discipline.',
       event: 'Reverse Hackathon 2026 is a three-hour defensive cybersecurity sprint presented by The Whitehatians and the Department of Cyber Security at SRM Valliammai Engineering College.',
       format: 'Participants choose a cybersecurity domain, work through the assigned challenge format, document their evidence, and complete a final handover before the cutoff.',
@@ -2159,7 +1946,7 @@ Error generating stack: `+l.message+`
       var text = question.toLowerCase();
       var key = '';
       if (/^(hi|hello|hey|hai|good morning|good afternoon|good evening)\b/.test(text)) key = 'greeting';
-      else if (/payment|fee|cost|pay|register fee/.test(text)) key = 'payment';
+      else if (/payment|fee|cost|pay|register fee/.test(text)) key = 'fee';
       else if (/theme|dc|comic|superhero/.test(text)) key = 'theme';
       else if (/event|hackathon|when|date|venue|where/.test(text)) key = 'event';
       else if (/format|round|challenge|how does|process/.test(text)) key = 'format';

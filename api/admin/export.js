@@ -5,7 +5,7 @@
  *
  * Three sheets:
  *   - Participants   one row per human; this is what the check-in desk wants.
- *   - Registrations  one row per entry; this is what reconciles payments.
+ *   - Registrations  one row per entry.
  *   - Summary        headline totals.
  *
  * Columns are addressed by 1-based index rather than by header string.
@@ -15,7 +15,7 @@
  */
 
 const ExcelJS = require("exceljs");
-const { guardAdmin, isMongoConfigured, getRegistrations, PAYMENT } = require("../_lib");
+const { guardAdmin, isMongoConfigured, getRegistrations } = require("../_lib");
 
 const GOLD = "FFF0B74A";
 const DARK = "FF09111C";
@@ -42,9 +42,6 @@ const PARTICIPANT_KEYS = [
   "Gender",
   "Domain",
   "Heard about",
-  "UPI UTR",
-  "Proof file",
-  "Fee (Rs)",
   "Submitted at",
 ];
 
@@ -64,9 +61,6 @@ const REGISTRATION_KEYS = [
   "Partner register no.",
   "Domain",
   "Heard about",
-  "UPI UTR",
-  "Proof file",
-  "Fee due (Rs)",
   "Submitted at",
 ];
 
@@ -151,9 +145,6 @@ function buildWorkbook(regs, totals) {
         "Gender": p.gender,
         "Domain": reg.domain,
         "Heard about": reg.heardAbout,
-        "UPI UTR": reg.payment.upiTransactionId,
-        "Proof file": reg.payment.proof.filename,
-        "Fee (Rs)": PAYMENT.amountPerPerson,
         "Submitted at": reg.submittedAt,
       });
     }
@@ -167,10 +158,9 @@ function buildWorkbook(regs, totals) {
   }
   styleHeader(people, PARTICIPANT_KEYS.length);
   people.getColumn(at(PARTICIPANT_KEYS, "Submitted at")).numFmt = "dd-mmm-yyyy hh:mm";
-  people.getColumn(at(PARTICIPANT_KEYS, "Fee (Rs)")).numFmt = '"Rs "#,##0';
   people.getColumn(1).alignment = { horizontal: "center", vertical: "top" };
   finishSheet(people, PARTICIPANT_KEYS, [
-    5, 22, 12, 24, 19, 24, 26, 14, 22, 8, 15, 9, 26, 18, 20, 22, 10, 20,
+    5, 22, 12, 24, 19, 24, 26, 14, 22, 8, 15, 9, 26, 18, 20,
   ]);
 
   /* ---- Registrations ---- */
@@ -191,9 +181,6 @@ function buildWorkbook(regs, totals) {
     "Partner register no.": reg.partner ? reg.partner.rollNumber : "-",
     "Domain": reg.domain,
     "Heard about": reg.heardAbout,
-    "UPI UTR": reg.payment.upiTransactionId,
-    "Proof file": reg.payment.proof.filename,
-    "Fee due (Rs)": reg.amountDue,
     "Submitted at": reg.submittedAt,
   }));
 
@@ -205,9 +192,8 @@ function buildWorkbook(regs, totals) {
   }
   styleHeader(sheet, REGISTRATION_KEYS.length);
   sheet.getColumn(at(REGISTRATION_KEYS, "Submitted at")).numFmt = "dd-mmm-yyyy hh:mm";
-  sheet.getColumn(at(REGISTRATION_KEYS, "Fee due (Rs)")).numFmt = '"Rs "#,##0';
   finishSheet(sheet, REGISTRATION_KEYS, [
-    5, 22, 12, 24, 11, 24, 26, 14, 26, 18, 20, 12, 19, 26, 18, 20, 22, 13, 20,
+    5, 22, 12, 24, 11, 24, 26, 14, 26, 18, 20, 12, 19, 26, 18, 20,
   ]);
 
   /* ---- Summary ---- */
@@ -220,13 +206,11 @@ function buildWorkbook(regs, totals) {
     ["Organiser", ORGANISER],
     ["College", COLLEGE],
     ["Event date", EVENT_DATE],
-    ["Entry fee per person", `Rs ${PAYMENT.amountPerPerson}`],
     ["", ""],
     ["Total registrations", totals.registrations],
     ["Total participants", totals.participants],
     ["Solo entries", totals.solo],
     ["Duo entries", totals.duo],
-    ["Total fee collected", totals.amountCollected],
     ["", ""],
     ["Generated at", new Date()],
   ];
@@ -238,7 +222,6 @@ function buildWorkbook(regs, totals) {
     if (label) rowOf.set(label, rowNumber);
   }
 
-  summary.getCell(rowOf.get("Total fee collected"), 2).numFmt = '"Rs "#,##0';
   summary.getCell(rowOf.get("Generated at"), 2).numFmt = "dd-mmm-yyyy hh:mm";
 
   summary.getColumn(1).width = 32;
@@ -267,18 +250,17 @@ module.exports = async function handler(req, res) {
 
   try {
     const col = await getRegistrations();
-    const regs = await col.find({}).sort({ submittedAt: -1 }).toArray();
+    const regs = await col.find({}, { projection: { payment: 0, amountDue: 0 } }).sort({ submittedAt: -1 }).toArray();
 
     const totals = regs.reduce(
       (acc, r) => {
         acc.registrations += 1;
         acc.participants += r.headcount;
-        acc.amountCollected += r.amountDue;
         if (r.entryFormat === "duo") acc.duo += 1;
         else acc.solo += 1;
         return acc;
       },
-      { registrations: 0, participants: 0, amountCollected: 0, solo: 0, duo: 0 }
+      { registrations: 0, participants: 0, solo: 0, duo: 0 }
     );
 
     const buffer = await buildWorkbook(regs, totals).xlsx.writeBuffer();

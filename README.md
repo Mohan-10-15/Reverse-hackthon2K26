@@ -11,10 +11,9 @@ already-built, deliberately vulnerable system and must find, patch and defend th
 | Path | What it is |
 | --- | --- |
 | `index.html` | The whole public site — markup, CSS and JS in one file. This is what visitors get. |
-| `admin.html` | Organiser dashboard. Asks for `ADMIN_KEY`, shows totals, proof viewer and Excel download. |
+| `admin.html` | Organiser dashboard. Asks for `ADMIN_KEY`, shows registration totals and Excel download. |
 | `hero-bg.jpg`, `superman-hero.jpg`, `about-bg.jpg`, `standards-bg.jpg`, `dc-contact-art.jpg`, `dc-contact-clear.jpg` / `.webp` / `.avif`, `srm-valliammai-logo.jpg`, `assets/superman-hero.png` / `.webp` / `.avif` | Section backgrounds and art. Modern browsers use the smaller AVIF/WebP variants; original files remain as fallbacks. |
 | `assets/villains/` | The 15 gallery cards, downloaded from the old CDN so the site no longer depends on a third-party host. |
-| `assets/upi-qr.jpeg` | UPI QR code shown in the payment step. |
 | `og-deck.png` | Open Graph preview image. |
 | `api/` | Vercel serverless functions (Node). Registration storage + organiser API. |
 | `scripts/check-site.mjs` | Pre-deploy check. Run it before every deploy. |
@@ -29,7 +28,7 @@ front end, and no framework.
 - **Date:** Tuesday, 13 October 2026, 09:00 IST (gates 08:00, ledger closes 07:00)
 - **Format:** Solo or Duo; a Duo is one team lead plus exactly one partner (no larger teams)
 - **Eligibility:** DEP-CYS students, years I–III
-- **Fee:** ₹100 per participant (Solo ₹100; Duo ₹200)
+- **Entry fee:** None. Registration is free; no payment or receipt is required.
 
 The date lives in six places inside `index.html` — meta description, the `content:` string in
 `.landing-art-frame::after`, the hero date line, the "ENTRY STATUS" badge, the contact block, and
@@ -89,49 +88,37 @@ the response reports `"emailSent": false`.
 No manual collection setup is needed: `api/_lib.js` creates the indexes on first write, including
 a unique index on the lowercased team name / Solo alias and another on participant emails.
 
-> M0 free tier is **5 GB shared across the whole cluster** and caps a document at 16 MB. Payment
-> screenshots (≤2 MB) fit comfortably; do not store PDFs or videos there.
+> M0 free tier is **5 GB shared across the whole cluster** and caps a document at 16 MB. Keep
+> registration records concise; do not store large media files in the database.
 
-## Registration and payment
+## Registration (free)
 
-Every field shown for the selected format is mandatory. `api/_lib.js` is the single source of truth
-for validation, and the page mirrors each server-side error back onto the matching input.
+Registration is free; no UPI payment, transaction ID, receipt, or proof is required. `api/_lib.js`
+is the server-side validation source of truth, and the page mirrors field errors onto the matching input.
 
 The form collects the entry format (Solo or Duo), a unique team name or Solo alias, and the primary
 participant's name, email, phone, year, department, gender and register number. Duo entries also
 require the partner's name, year and register number. Every entry includes one of 15 domains, how
-the participant heard about the event, the rules checkbox, the **UPI transaction/UTR id**, and a
-**payment screenshot**.
-
-The screenshot is downscaled in the browser through a canvas (max edge 1400 px, JPEG q0.82) before
-upload, so a 4 MB phone photo becomes roughly 200 KB. The server rejects anything over 2 MB, any
-mime type outside JPEG/PNG/WebP, and any payload whose base64 does not round-trip — the decoded
-byte length is what gets stored, never the size the client claims.
-
-Registration closes at **13 October 2026, 07:00 IST**; after that `/api/register` returns `403`.
+the participant heard about the event, and agreement to the rules.
 
 ### API
 
 | Route | Method | Auth | Purpose |
 | --- | --- | --- | --- |
-| `/api/register` | POST | none | Store one registration + proof. `201`, or `400` with `fieldErrors`, `409` on duplicate team/email, `403` after the deadline, `503` if Mongo is unreachable. |
-| `/api/admin/registrations` | GET | `x-admin-key` | All registrations with the screenshot bytes stripped, plus totals. |
-| `/api/admin/proof?id=<id>` | GET | `x-admin-key` | Streams one stored screenshot. |
+| `/api/register` | POST | none | Store one free registration. `201`, or `400` with `fieldErrors`, `409` on duplicate team/email, `403` after the deadline, `503` if Mongo is unreachable. |
+| `/api/admin/registrations` | GET | `x-admin-key` | Registration details and Solo/Duo/participant totals; legacy payment fields are excluded. |
 | `/api/admin/export` | GET | `x-admin-key` | Streams a styled `.xlsx`. |
 
 The admin key is compared with `crypto.timingSafeEqual`, so it cannot be probed byte by byte.
-Proofs are served `private, no-store` and are only ever fetched with the key attached — there is no
-guessable public URL for a screenshot.
 
 ## Organiser dashboard
 
 Open `/admin.html`, paste the `ADMIN_KEY`, and the dashboard shows registrations, participants,
-format totals and total fee recorded. You can filter the table, open any payment screenshot, and
-download a workbook with three sheets:
+and Solo/Duo totals. You can filter the table and download a workbook with three sheets:
 
 - **Participants** — one row per human. This is what the check-in desk wants.
-- **Registrations** — one row per entry. This is what reconciles payments.
-- **Summary** — headline totals.
+- **Registrations** — one row per entry.
+- **Summary** — event and registration totals; no fee reconciliation is included.
 
 The key is held in `sessionStorage`, so it disappears when the tab closes.
 
@@ -171,17 +158,14 @@ try to build the leftover Next.js app. Keep the project's Framework Preset on **
 
 ## Before you go live
 
-1. **Confirm the payment details.** `api/_lib.js` has `PAYMENT.amountPerPerson` (`100`) and
-   `PAYMENT.payeeName`, and `index.html` shows the payee next to the QR. There is deliberately **no
-   typed UPI id on the page** — the QR is the only payment instruction, so there is nothing to fall
-   out of sync. That also means the QR *must* be right: check that `assets/upi-qr.jpeg` encodes the
-   account you actually want to be paid, for the amount shown, before you announce anything.
+1. **Confirm the free-entry policy** remains accurate in the registration form, confirmation email,
+   and event announcement; do not add UPI, transaction IDs, payment screenshots, or proof uploads.
 2. **Confirm the date** in all six places listed above.
 3. **Set `ADMIN_KEY`** to a real secret. Do not reuse the local value.
 4. **Contact email.** `CONTACT_EMAIL` in `index.html` is still
    `registration@whitehatians.in`. The confirmation mailto button uses it. Change it to the
    organiser mailbox (`SMTP_USER`) so replies land in the same inbox.
-5. Proofread the fee, domain list and schedule against your announcement.
+5. Proofread the domain list and schedule against your announcement.
 
 ## Deploy checklist
 

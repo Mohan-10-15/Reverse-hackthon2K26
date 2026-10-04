@@ -1,7 +1,7 @@
 /**
  * POST /api/register
  *
- * Stores one registration plus its UPI payment screenshot in MongoDB.
+ * Stores one free registration in MongoDB.
  * Duplicate team names and duplicate participant emails are rejected with 409.
  */
 
@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
     body = await readJsonBody(req);
   } catch (e) {
     if (e.message === "PAYLOAD_TOO_LARGE") {
-      return res.status(413).json({ error: "That upload is too large. Keep the screenshot under 2 MB." });
+      return res.status(413).json({ error: "The submitted registration is too large." });
     }
     return res.status(400).json({ error: "Could not read the submitted form." });
   }
@@ -100,7 +100,6 @@ module.exports = async function handler(req, res) {
 
     return res.status(201).json({
       registrationId: doc.registrationId,
-      amountDue: doc.amountDue,
       headcount: doc.headcount,
       emailSent: emailed,
     });

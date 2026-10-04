@@ -6,19 +6,11 @@
  * lives in /api as Vercel Node functions talking to MongoDB Atlas.
  */
 
-const { MongoClient, Binary } = require("mongodb");
+const { MongoClient } = require("mongodb");
 
 const EVENT_START_ISO = "2026-10-13T09:00:00+05:30";
 /** The ledger closes at 07:00 on the day of the event. */
 const REGISTRATION_DEADLINE_ISO = "2026-10-13T07:00:00+05:30";
-
-const PAYMENT = {
-  amountPerPerson: 100,
-  payeeName: "Whitehat Club, DEP-CYS",
-  /** Hard ceiling for the uploaded screenshot (2 MB). */
-  maxProofBytes: 2 * 1024 * 1024,
-  allowedProofTypes: ["image/jpeg", "image/png", "image/webp"],
-};
 
 const YEARS = ["I", "II", "III"];
 const GENDERS = ["Female", "Male"];
@@ -240,44 +232,6 @@ function validateRegistration(body) {
 
   if (body.agree !== true) fail("agree", "Accept the rules to enter the ledger.");
 
-  const upiTransactionId = clean(body.payment?.upiTransactionId, 40);
-  if (upiTransactionId.length < 6) {
-    fail("payment.upiTransactionId", "Enter the UTR / reference from your UPI app.");
-  } else if (!/^[A-Za-z0-9-]{6,40}$/.test(upiTransactionId)) {
-    fail("payment.upiTransactionId", "Use letters, numbers and hyphens only.");
-  }
-
-  const shot = body.payment?.screenshot ?? {};
-  const mimeType = clean(shot.mimeType, 40);
-  const filename = clean(shot.filename, 120);
-  const dataBase64 = typeof shot.dataBase64 === "string" ? shot.dataBase64 : "";
-
-  if (!filename) fail("payment.screenshot.filename", "Attach the payment screenshot.");
-  if (!PAYMENT.allowedProofTypes.includes(mimeType)) {
-    fail("payment.screenshot.mimeType", "Upload a JPG, PNG or WebP image.");
-  }
-  if (!dataBase64) {
-    fail("payment.screenshot.dataBase64", "Upload the payment screenshot.");
-  }
-
-  let proofBytes = null;
-  if (dataBase64) {
-    // ~4/3 expansion: a 2 MB image is ~2.7 MB of base64.
-    if (dataBase64.length > Math.ceil((PAYMENT.maxProofBytes * 4) / 3) + 1024) {
-      fail("payment.screenshot.dataBase64", "Screenshot is too large. Keep it under 2 MB.");
-    } else {
-      const buf = Buffer.from(dataBase64, "base64");
-      // Round-trip check: rejects strings that are not valid base64 image data.
-      if (buf.length === 0 || buf.toString("base64").replace(/=+$/, "") !== dataBase64.replace(/=+$/, "")) {
-        fail("payment.screenshot.dataBase64", "That file could not be read. Re-attach the screenshot.");
-      } else if (buf.length > PAYMENT.maxProofBytes) {
-        fail("payment.screenshot.dataBase64", "Screenshot is too large. Keep it under 2 MB.");
-      } else {
-        proofBytes = buf;
-      }
-    }
-  }
-
   if (Object.keys(errors).length > 0) return { ok: false, fieldErrors: errors };
 
   const headcount = entryFormat === "duo" ? 2 : 1;
@@ -300,11 +254,6 @@ function validateRegistration(body) {
       heardAbout,
       agree: true,
       headcount,
-      amountDue: headcount * PAYMENT.amountPerPerson,
-      payment: {
-        upiTransactionId,
-        proof: { filename, mimeType, sizeBytes: proofBytes.length, bytes: new Binary(proofBytes) },
-      },
     },
   };
 }
@@ -326,8 +275,8 @@ function readJsonBody(req) {
     const chunks = [];
     req.on("data", (chunk) => {
       size += chunk.length;
-      // 4 MB of JSON comfortably fits a 2 MB base64 screenshot.
-      if (size > 4 * 1024 * 1024) {
+      // Registration data is small; reject unexpectedly large payloads.
+      if (size > 256 * 1024) {
         reject(new Error("PAYLOAD_TOO_LARGE"));
         req.destroy();
         return;
@@ -409,8 +358,7 @@ function buildConfirmationHtml(reg) {
   <div style="padding:26px">
     <p style="margin:0 0 18px;font-size:15px">Hi ${escapeHtml(reg.leader.fullName)},</p>
     <p style="margin:0 0 18px;font-size:15px;line-height:1.6">
-      Your seat in the ledger is confirmed. Bring the details below and a copy of your
-      payment screenshot on the day.
+      Your seat in the ledger is confirmed. Registration is free; no payment or receipt is required. Bring the details below to check in.
     </p>
     <table style="width:100%;border-collapse:collapse;font-size:13px;margin:0 0 22px">
       <tr>
@@ -428,14 +376,6 @@ function buildConfirmationHtml(reg) {
       <tr>
         <td style="padding:8px 0;color:#8f96a8">Domain</td>
         <td style="padding:8px 0">${escapeHtml(reg.domain)}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px 0;color:#8f96a8">UPI UTR</td>
-        <td style="padding:8px 0;font-family:monospace">${escapeHtml(reg.payment.upiTransactionId)}</td>
-      </tr>
-      <tr>
-        <td style="padding:8px 0;color:#8f96a8">Fee paid</td>
-        <td style="padding:8px 0">Rs ${reg.amountDue}</td>
       </tr>
       <tr>
         <td style="padding:8px 0;color:#8f96a8">Event</td>
@@ -468,8 +408,7 @@ function buildConfirmationText(reg) {
     `Format          : ${reg.headcount === 2 ? "Duo" : "Solo"}`,
     `${reg.headcount === 2 ? "Team" : "Alias"}         : ${reg.teamName}`,
     `Domain          : ${reg.domain}`,
-    `UPI UTR         : ${reg.payment.upiTransactionId}`,
-    `Fee paid        : Rs ${reg.amountDue}`,
+    "Entry fee       : Free (no payment required)",
     `Event           : ${EVENT_DATE_LABEL}, 09:00 IST`,
     "",
     "Participants",
@@ -539,11 +478,9 @@ module.exports = {
   ORGANISER,
   COLLEGE,
   EVENT_DATE_LABEL,
-  PAYMENT,
   DOMAINS,
   HEARD_ABOUT,
   YEARS,
-  Binary,
   isMongoConfigured,
   getDb,
   getRegistrations,

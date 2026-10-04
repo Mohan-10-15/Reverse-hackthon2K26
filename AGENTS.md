@@ -53,6 +53,7 @@ Cinematic 1970s mafia-drama aesthetic: dark, formal, dramatic — never violent 
   - **Team name / Solo alias**: required and unique for every entry.
   - **Duo partner**: required only for Duo; partner's full name / year / roll number.
   - "How they heard" (Instagram / WhatsApp / Friend / Faculty / Other). Do not collect T-shirt size.
+- Entry is free: do not collect UPI details, payment transaction IDs, receipts or screenshots; no payment proof is required in the form, API, admin dashboard, email or exports.
   - Checkbox agreeing to The Code (link to the Code section).
 - Validation: required-field checks, email/phone format, and partner details only for Duo — client-side plus server-side. **Block duplicate submissions** (same participant email or team name / Solo alias twice).
 - On valid submit: themed confirmation **"Welcome to the Family."** with a registration ID (e.g. `RH26-XXXX`), a **"Send Registration Email"** button (pre-filled `mailto:` to [CONTACT EMAIL] with all details in the body), and a **"Copy Details"** fallback button. This email is the real delivery mechanism — never drop it for a fake success state. Show real error states; never fail silently.

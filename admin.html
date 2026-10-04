@@ -59,11 +59,10 @@
   .gate .hint{margin:16px 0 0;color:#6f8494;font-size:10px}
 
   /* ---- stats ---- */
-  .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
   .stat{border:1px solid var(--line);border-radius:3px;padding:14px 15px;background:rgba(6,19,32,.55)}
   .stat span{display:block;color:#8da2b2;font-size:9px;letter-spacing:.13em}
   .stat strong{display:block;margin-top:6px;color:var(--paper);font:700 26px var(--serif);line-height:1}
-  .stat.gold strong{color:var(--gold)}
 
   .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
   .toolbar input[type=search]{font:inherit;font-size:12px;color:#f4f7fb;background:rgba(3,10,17,.8);
@@ -73,7 +72,7 @@
 
   /* ---- table ---- */
   .card{border:1px solid var(--line);border-radius:3px;overflow-x:auto;background:rgba(6,19,32,.4)}
-  table{width:100%;border-collapse:collapse;min-width:1080px}
+  table{width:100%;border-collapse:collapse;min-width:860px}
   thead th{position:sticky;top:0;z-index:2;background:#0d1b2a;color:var(--gold);text-align:left;
     font-size:9px;letter-spacing:.13em;padding:12px 12px;border-bottom:1px solid rgba(240,183,74,.3);white-space:nowrap}
   tbody td{padding:12px;border-bottom:1px solid rgba(247,241,223,.08);font-size:11px;vertical-align:top}
@@ -85,19 +84,8 @@
   .pill{display:inline-block;font-size:9px;letter-spacing:.1em;padding:3px 8px;border-radius:99px;
     border:1px solid rgba(88,213,238,.4);color:var(--cyan)}
   .pill.duo{border-color:rgba(240,183,74,.45);color:var(--gold)}
-  .mini{font:inherit;font-size:9px;letter-spacing:.1em;padding:6px 10px;border-radius:2px;cursor:pointer;
-    background:rgba(88,213,238,.1);border:1px solid rgba(88,213,238,.35);color:var(--cyan)}
-  .mini:hover{background:rgba(88,213,238,.2)}
   .empty{padding:46px 20px;text-align:center;color:#7d929f;font-size:12px}
 
-  /* ---- proof lightbox ---- */
-  .lightbox{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
-    background:rgba(4,9,16,.93)}
-  .lightbox[hidden]{display:none}
-  .lightbox-inner{max-width:min(900px,94vw);max-height:92vh;display:flex;flex-direction:column;gap:12px}
-  .lightbox-head{display:flex;justify-content:space-between;align-items:center;gap:14px;color:#dbe7ed;font-size:11px}
-  .lightbox img{max-width:100%;max-height:76vh;object-fit:contain;background:#fff;border-radius:3px}
-  .lightbox-foot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:90;
     background:#0d1b2a;border:1px solid rgba(200,53,44,.5);color:#ff9d97;
     padding:11px 16px;border-radius:3px;font-size:11px;max-width:90vw}
@@ -148,11 +136,10 @@
       <div class="stat"><span>PARTICIPANTS</span><strong id="sParts">0</strong></div>
       <div class="stat"><span>SOLO</span><strong id="sSolo">0</strong></div>
       <div class="stat"><span>DUO</span><strong id="sDuo">0</strong></div>
-      <div class="stat gold"><span>FEE COLLECTED</span><strong id="sFee">&#8377;0</strong></div>
     </div>
 
     <div class="toolbar">
-      <input type="search" id="search" placeholder="Filter by ID, team, name, email, UTR or domain" aria-label="Filter registrations">
+      <input type="search" id="search" placeholder="Filter by ID, team, name, email or domain" aria-label="Filter registrations">
       <span class="count" id="count">&nbsp;</span>
     </div>
 
@@ -161,8 +148,7 @@
         <thead>
           <tr>
             <th>ID</th><th>FORMAT</th><th>TEAM / ALIAS</th><th>LEAD / PARTICIPANT</th><th>PARTNER</th>
-            <th>DOMAIN</th><th>UPI UTR</th><th>PROOF</th>
-            <th style="text-align:right">FEE</th><th>SUBMITTED</th>
+            <th>DOMAIN</th><th>SUBMITTED</th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -170,19 +156,6 @@
       <p class="empty" id="empty" hidden>No registrations yet.</p>
     </div>
   </section>
-</div>
-
-<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Payment proof">
-  <div class="lightbox-inner">
-    <div class="lightbox-head">
-      <strong id="lbTitle">Payment proof</strong>
-      <button class="mini" id="lbClose" type="button">Close</button>
-    </div>
-    <img id="lbImg" alt="Uploaded UPI payment screenshot">
-    <div class="lightbox-foot">
-      <a class="btn" id="lbDownload" download>Download image</a>
-    </div>
-  </div>
 </div>
 
 <p class="toast" id="toast" hidden role="status"></p>
@@ -194,7 +167,6 @@
   var KEY_STORE = "rh2026_admin_key";
   var key = "";
   var all = [];
-  var proofObjectUrl = null;
 
   var $ = function (s) { return document.querySelector(s); };
   var gate = $("#gate"), dash = $("#dash"), rowsEl = $("#rows"), emptyEl = $("#empty");
@@ -212,8 +184,6 @@
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
-
-  function money(n) { return "\u20b9" + Number(n || 0).toLocaleString("en-IN"); }
 
   function fmtDate(value) {
     if (!value) return "\u2014";
@@ -241,7 +211,7 @@
     if (term) {
       list = all.filter(function (r) {
         return [r.registrationId, r.teamName, r.leader && r.leader.fullName, r.leader && r.leader.email,
-          r.partner && r.partner.fullName, r.domain, r.payment && r.payment.upiTransactionId, r.heardAbout]
+          r.partner && r.partner.fullName, r.domain, r.heardAbout]
           .join(" ").toLowerCase().indexOf(term) !== -1;
       });
     }
@@ -253,7 +223,6 @@
     rowsEl.innerHTML = list.map(function (r) {
       var partner = r.partner ? r.partner.fullName : "\u2014";
       var partnerExtra = r.partner ? " (" + esc(r.partner.year) + ", " + esc(r.partner.rollNumber) + ")" : "";
-      var proof = r.payment && r.payment.proof;
       return "<tr>" +
         '<td class="id">' + esc(r.registrationId) + "</td>" +
         '<td><span class="pill' + (r.entryFormat === "duo" ? " duo" : "") + '">' +
@@ -263,10 +232,6 @@
           esc(r.leader.email) + "</small></td>" +
         "<td>" + partner + partnerExtra + "</td>" +
         "<td>" + esc(r.domain) + "</td>" +
-        "<td>" + esc(r.payment.upiTransactionId) + "</td>" +
-        '<td><button class="mini" type="button" data-proof="' + esc(r.registrationId) + '">View</button>' +
-          (proof ? "<br><small style='color:#7d929f'>" + esc(proof.filename) + "</small>" : "") + "</td>" +
-        '<td class="num">' + money(r.amountDue) + "</td>" +
         "<td>" + esc(fmtDate(r.submittedAt)) + "</td>" +
       "</tr>";
     }).join("");
@@ -279,7 +244,6 @@
       $("#sParts").textContent = data.totals.participants;
       $("#sSolo").textContent = data.totals.solo;
       $("#sDuo").textContent = data.totals.duo;
-      $("#sFee").textContent = money(data.totals.amountCollected);
       render();
     });
   }
@@ -313,40 +277,6 @@
     $("#keyInput").value = "";
   }
 
-  /* ---- proof lightbox ---- */
-  function showProof(id) {
-    var lb = $("#lightbox");
-    $("#lbTitle").textContent = "Payment proof \u00b7 " + id;
-    lb.hidden = false;
-    $("#lbImg").removeAttribute("src");
-    $("#lbDownload").removeAttribute("href");
-
-    // Authenticated image: fetch with the header, then show a blob URL.
-    fetch("/api/admin/proof?id=" + encodeURIComponent(id), { headers: { "x-admin-key": key } })
-      .then(function (res) {
-        if (!res.ok) return res.json().then(function (b) { throw new Error(b.error || "Could not load proof."); });
-        return res.blob();
-      })
-      .then(function (blob) {
-        if (proofObjectUrl) URL.revokeObjectURL(proofObjectUrl);
-        proofObjectUrl = URL.createObjectURL(blob);
-        $("#lbImg").src = proofObjectUrl;
-        $("#lbDownload").href = proofObjectUrl;
-        $("#lbDownload").setAttribute("download", "payment-proof-" + id + ".jpg");
-      })
-      .catch(function (e) {
-        lb.hidden = true;
-        toast(e.message);
-      });
-  }
-
-  function closeLightbox() {
-    $("#lightbox").hidden = true;
-    $("#lbImg").removeAttribute("src");
-    $("#lbDownload").removeAttribute("href");
-    if (proofObjectUrl) { URL.revokeObjectURL(proofObjectUrl); proofObjectUrl = null; }
-  }
-
   /* ---- wiring ---- */
   $("#unlockBtn").addEventListener("click", unlock);
   $("#keyInput").addEventListener("keydown", function (e) { if (e.key === "Enter") unlock(); });
@@ -357,9 +287,6 @@
     load().catch(function (e) { toast(e.message); }).then(function () { $("#refreshBtn").disabled = false; });
   });
   $("#search").addEventListener("input", render);
-  $("#lbClose").addEventListener("click", closeLightbox);
-  $("#lightbox").addEventListener("click", function (e) { if (e.target === $("#lightbox")) closeLightbox(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeLightbox(); });
 
   $("#exportBtn").addEventListener("click", function () {
     if (!key) return;
@@ -383,11 +310,6 @@
       })
       .catch(function (e) { toast(e.message); })
       .then(function () { btn.disabled = false; });
-  });
-
-  rowsEl.addEventListener("click", function (e) {
-    var btn = e.target.closest("[data-proof]");
-    if (btn) showProof(btn.getAttribute("data-proof"));
   });
 
   /* Re-unlock automatically when the key is still in this tab. */
