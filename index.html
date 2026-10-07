@@ -665,6 +665,13 @@
   .register-success p { color: #a4b6c3; font-family: var(--serif); font-size: 16px; line-height: 1.5; max-width: 520px; margin: 0; }
   .registration-id { border: 1px solid var(--gold); color: var(--gold); display: inline-block; margin: 20px 0; padding: 12px 20px; font-size: 15px; letter-spacing: .14em; background: rgba(240,183,74,.06); }
   .registration-id span { display: block; font-size: 8px; color: #b9a26b; letter-spacing: .2em; margin-bottom: 6px; }
+  .account-credentials { display: grid; gap: 8px; margin: 10px 0 20px; padding: 18px; border: 1px solid rgba(240,183,74,.42); background: rgba(240,183,74,.08); }
+  .account-credentials > span { color: var(--gold); font: 9px var(--display); letter-spacing: .14em; }
+  .account-credentials > strong { color: var(--paper); font: 700 22px var(--serif); overflow-wrap: anywhere; }
+  .account-credentials small { color: #a4b6c3; font: 12px var(--display); }
+  .account-credentials small b { color: var(--cyan); font-weight: 400; overflow-wrap: anywhere; }
+  .account-credentials p { margin: 0; color: #a4b6c3; font: 11px/1.55 var(--display); }
+  .account-credentials .button { justify-self: start; margin-top: 3px; }
   .register-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
   .register-actions .button { cursor: pointer; }
   .text-link { cursor: pointer; background: none; border: 0; color: var(--cyan); font-family: var(--display); font-size: 10px; margin-top: 22px; padding: 0; text-decoration: underline; text-underline-offset: 4px; }
@@ -860,6 +867,7 @@ Error generating stack: `+l.message+`
     <a href="#domains" data-manus_clickable="true" data-manus_click_id="4">Domains</a>
     <a href="#rules" data-manus_clickable="true" data-manus_click_id="5">Rules</a>
     <a href="#contact">Contact</a>
+    <a href="user.html">Team Login</a>
   </nav>
   <button class="menu-toggle" id="menuBtn" type="button" aria-expanded="false" aria-controls="navDrop" aria-label="Toggle menu">☰</button>
   <a class="nav-cta" href="#register" data-manus_clickable="true" data-manus_click_id="8">Register · RH ▶</a>
@@ -870,6 +878,7 @@ Error generating stack: `+l.message+`
   <a href="#domains">Domains</a>
   <a href="#rules">Rules</a>
   <a href="#contact">Contact</a>
+  <a href="user.html">Team Login</a>
   <a href="#register">Lock your seat</a>
 </div>
 
@@ -1042,7 +1051,7 @@ Error generating stack: `+l.message+`
         <p>Complete the participant record below. Your details stay focused, readable, and ready for the mission desk.</p>
         <div class="register-steps">
           <div class="register-step"><b>01</b><div><strong>SOLO / DUO</strong><small>Register alone or with one teammate.</small></div></div>
-          <div class="register-step"><b>02</b><div><strong>IDENTIFY PARTICIPANT</strong><small>Share the primary participant details.</small></div></div>
+          <div class="register-step"><b>02</b><div><strong>TEAM ACCOUNT + IDENTITY</strong><small>Create a workspace login and add the primary participant.</small></div></div>
           <div class="register-step"><b>03</b><div><strong>SELECT DOMAIN</strong><small>Lock one cybersecurity practice ground.</small></div></div>
           <div class="register-step"><b>04</b><div><strong>CONFIRM ENTRY</strong><small>Accept the rules and submit the record.</small></div></div>
         </div>
@@ -1065,8 +1074,13 @@ Error generating stack: `+l.message+`
             </div>
           </div>
 
-          <div class="form-section-head"><span>02 · IDENTITY</span><p>The person we should contact first.</p></div>
+          <div class="form-section-head"><span>02 · TEAM ACCOUNT + IDENTITY</span><p>Create your team login, then add the primary participant.</p></div>
           <div class="form-grid">
+            <div class="field">
+              <span>TEAM WORKSPACE PASSWORD <i>*</i></span>
+              <input id="f-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" placeholder="Create an 8–72 character password" aria-describedby="e-password" required="">
+              <small id="e-password">The team name or Solo alias is your username. Keep this password private.</small>
+            </div>
             <div class="field">
               <span>FULL NAME <i>*</i></span>
               <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Your full name" aria-describedby="e-name" required="" data-manus_clickable="true" data-manus_click_id="55">
@@ -1193,6 +1207,13 @@ Error generating stack: `+l.message+`
         <h2>Welcome to <em>the operation.</em></h2>
         <p>Your registration is stored in the mission registry. Entry is free; no payment or receipt is required. Keep this ID safe for check-in.</p>
         <div class="registration-id"><span>REGISTRATION ID</span><strong id="regId">RH26-XXXX</strong></div>
+        <div class="account-credentials" role="group" aria-label="Team workspace login details">
+          <span>TEAM WORKSPACE LOGIN</span>
+          <strong id="accountUsername">TEAM NAME</strong>
+          <small>Password: <b id="accountPassword"></b></small>
+          <p>This password is shown once and is not included in the email or organizer dashboard. Save it before leaving this page.</p>
+          <a class="button ghost" href="user.html">Open team workspace →</a>
+        </div>
         <div class="register-actions">
           <a class="button primary" id="mailBtn" href="#" aria-label="Send registration email">✉ Send a copy by email</a>
           <button class="button ghost" id="copyBtn" type="button">Copy details</button>
@@ -1631,6 +1652,7 @@ Error generating stack: `+l.message+`
   try { regs = JSON.parse(localStorage.getItem(LS_KEY) || "[]"); } catch (e) { regs = []; }
 
   var FIELDS = {
+    password: { el: "#f-password", check: function (v) { return v.length >= 8 && v.length <= 72; } },
     name: { el: "#f-name", check: function (v) { return v.trim().length >= 2; } },
     email: { el: "#f-email", check: function (v) { return /^\S+@\S+\.\S+$/.test(v.trim()); } },
     phone: { el: "#f-phone", check: function (v) { var c = v.replace(/[\s-]/g, ""); return /^(\+91)?[6-9]\d{9}$/.test(c) || /^\+?\d{10,15}$/.test(c); } },
@@ -1690,6 +1712,7 @@ Error generating stack: `+l.message+`
 
   /* Maps an api/_lib field path back to the input that produced it. */
   function fieldForPath(path) {
+    if (path === "password") return $("#f-password");
     if (path === "agree") return $("#f-agree");
     if (path === "heardAbout") return $("#f-heard");
     if (path === "domain") return $("#f-domain");
@@ -1734,6 +1757,7 @@ Error generating stack: `+l.message+`
       roll: $("#f-roll").value.trim(),
       domain: $("#f-domain").value,
       heard: $("#f-heard").value,
+      password: $("#f-password").value,
       agree: $("#f-agree").checked
     };
     var team = { team: $("#f-team").value.trim() };
@@ -1771,6 +1795,7 @@ Error generating stack: `+l.message+`
         : null,
       domain: data.domain,
       heardAbout: data.heard,
+      password: data.password,
       agree: data.agree
     };
 
@@ -1825,6 +1850,8 @@ Error generating stack: `+l.message+`
       "Gender: " + data.gender,
       "Roll No: " + data.roll,
       "Email: " + data.email,
+      "Team workspace username: " + team.team,
+      "Open team workspace: " + window.location.origin + "/user.html",
       "Phone: " + data.phone,
       "Heard about: " + data.heard,
       "Entry fee: Free — no payment required"
@@ -1842,7 +1869,10 @@ Error generating stack: `+l.message+`
     }
 
     $("#regId").textContent = id;
+    $("#accountUsername").textContent = team.team;
+    $("#accountPassword").textContent = data.password;
     $("#detailText").textContent = lines.join("\n");
+    $("#f-password").value = "";
 
     form.hidden = true;
     confirmPanel.hidden = false;

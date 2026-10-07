@@ -1,323 +1,230 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Mission Desk | Reverse Hackathon 2026</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2309111c'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='18' font-weight='700' fill='%23f0b74a' text-anchor='middle'%3ERH%3C/text%3E%3C/svg%3E">
-<style>
-  :root {
-    --ink:#09111c; --navy:#0d1b2a; --paper:#f7f1df; --cream:#fbf6e8;
-    --red:#c8352c; --gold:#f0b74a; --cyan:#58d5ee; --muted:#9caaba;
-    --line:rgba(247,241,223,.18);
-    --serif:Georgia,"Times New Roman",serif;
-    --display:"Courier New",monospace;
-  }
-  *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
-  body{
-    margin:0;font-family:var(--display);background:var(--ink);color:var(--muted);
-    line-height:1.5;overflow-x:hidden;
-    background-image:
-      radial-gradient(1000px 520px at 12% -8%,rgba(88,213,238,.09),transparent 60%),
-      radial-gradient(760px 420px at 92% 4%,rgba(240,183,74,.07),transparent 62%);
-    background-attachment:fixed;
-  }
-  .wrap{max-width:1280px;margin:0 auto;padding:26px 18px 70px}
-
-  header.top{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;
-    padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:22px}
-  .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
-  .brand-mark{width:40px;height:40px;flex:none;border:1px solid rgba(240,183,74,.4);border-radius:3px;
-    display:grid;place-items:center;color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.06em;
-    background:rgba(240,183,74,.07)}
-  .brand h1{margin:0;color:var(--paper);font:600 20px var(--serif);letter-spacing:.01em}
-  .brand small{display:block;color:#7d929f;font-size:9px;letter-spacing:.16em;margin-top:3px}
-  .top-actions{display:flex;gap:9px;flex-wrap:wrap}
-
-  .btn{font:inherit;font-size:10px;letter-spacing:.12em;cursor:pointer;border-radius:2px;
-    padding:10px 14px;border:1px solid rgba(247,241,223,.24);background:rgba(6,19,32,.7);color:#dbe7ed;
-    text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:.16s}
-  .btn:hover{border-color:var(--cyan);color:#fff}
-  .btn.primary{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}
-  .btn.primary:hover{filter:brightness(1.08)}
-  .btn[disabled]{opacity:.45;pointer-events:none}
-
-  /* ---- gate ---- */
-  .gate{max-width:520px;margin:8vh auto 0;border:1px solid rgba(240,183,74,.26);border-radius:4px;
-    padding:30px 26px;background:linear-gradient(180deg,rgba(240,183,74,.06),rgba(9,17,28,.6))}
-  .gate h2{margin:0 0 6px;color:var(--paper);font:600 22px var(--serif)}
-  .gate p{margin:0 0 18px;color:#8da2b2;font-size:12px}
-  .gate label{display:block;color:var(--gold);font-size:9px;letter-spacing:.14em;margin-bottom:7px}
-  .gate input{width:100%;font:inherit;font-size:13px;color:#f4f7fb;background:rgba(3,10,17,.8);
-    border:1px solid rgba(247,241,223,.2);border-radius:2px;padding:12px}
-  .gate input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(88,213,238,.1)}
-  .gate button{width:100%;margin-top:14px;justify-content:center}
-  .gate .err{margin:12px 0 0;color:#ff9d97;font-size:11px;display:none}
-  .gate .err.on{display:block}
-  .gate .hint{margin:16px 0 0;color:#6f8494;font-size:10px}
-
-  /* ---- stats ---- */
-  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
-  .stat{border:1px solid var(--line);border-radius:3px;padding:14px 15px;background:rgba(6,19,32,.55)}
-  .stat span{display:block;color:#8da2b2;font-size:9px;letter-spacing:.13em}
-  .stat strong{display:block;margin-top:6px;color:var(--paper);font:700 26px var(--serif);line-height:1}
-
-  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
-  .toolbar input[type=search]{font:inherit;font-size:12px;color:#f4f7fb;background:rgba(3,10,17,.8);
-    border:1px solid rgba(247,241,223,.2);border-radius:2px;padding:10px 12px;min-width:230px;flex:1}
-  .toolbar input[type=search]:focus{outline:none;border-color:var(--cyan)}
-  .count{color:#7d929f;font-size:10px;letter-spacing:.1em;white-space:nowrap}
-
-  /* ---- table ---- */
-  .card{border:1px solid var(--line);border-radius:3px;overflow-x:auto;background:rgba(6,19,32,.4)}
-  table{width:100%;border-collapse:collapse;min-width:860px}
-  thead th{position:sticky;top:0;z-index:2;background:#0d1b2a;color:var(--gold);text-align:left;
-    font-size:9px;letter-spacing:.13em;padding:12px 12px;border-bottom:1px solid rgba(240,183,74,.3);white-space:nowrap}
-  tbody td{padding:12px;border-bottom:1px solid rgba(247,241,223,.08);font-size:11px;vertical-align:top}
-  tbody tr:nth-child(even){background:rgba(247,241,223,.02)}
-  tbody tr:hover{background:rgba(88,213,238,.05)}
-  td.id{color:var(--cyan);white-space:nowrap}
-  td.team{color:#f4f7fb;font-weight:700}
-  td.num{text-align:right;font-variant-numeric:tabular-nums}
-  .pill{display:inline-block;font-size:9px;letter-spacing:.1em;padding:3px 8px;border-radius:99px;
-    border:1px solid rgba(88,213,238,.4);color:var(--cyan)}
-  .pill.duo{border-color:rgba(240,183,74,.45);color:var(--gold)}
-  .empty{padding:46px 20px;text-align:center;color:#7d929f;font-size:12px}
-
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:90;
-    background:#0d1b2a;border:1px solid rgba(200,53,44,.5);color:#ff9d97;
-    padding:11px 16px;border-radius:3px;font-size:11px;max-width:90vw}
-  .toast[hidden]{display:none}
-
-  @media (max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media (max-width:520px){
-    .stats{grid-template-columns:1fr}
-    .wrap{padding:18px 13px 60px}
-    .brand h1{font-size:17px}
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#09111c">
+  <title>Mission Control | Reverse Hackathon 2026</title>
+  <style>
+    :root{--ink:#09111c;--navy:#0d1b2a;--paper:#f7f1df;--gold:#f0b74a;--cyan:#58d5ee;--muted:#9caaba;--line:rgba(247,241,223,.16);--serif:Georgia,"Times New Roman",serif;--mono:"Courier New",monospace}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(1000px 520px at 12% -8%,rgba(88,213,238,.09),transparent 60%),radial-gradient(760px 420px at 92% 4%,rgba(240,183,74,.07),transparent 62%),var(--ink);color:var(--muted);font:12px/1.55 var(--mono);overflow-x:hidden}.wrap{max-width:1440px;margin:auto;padding:24px 18px 70px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:17px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--paper)}.brand-mark{width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(240,183,74,.45);color:var(--gold);font-weight:700}.brand strong{display:block;font:600 20px var(--serif)}.brand small{display:block;color:#7d929f;font-size:9px;letter-spacing:.14em;margin-top:3px}.actions{display:flex;gap:9px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(247,241,223,.23);border-radius:2px;padding:10px 13px;background:rgba(6,19,32,.7);color:#dbe7ed;text-decoration:none;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}.btn:hover{border-color:var(--cyan);color:#fff}.btn.primary{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}.btn:disabled{opacity:.55;cursor:wait}
+    .gate{max-width:540px;margin:9vh auto 0;border:1px solid rgba(240,183,74,.3);padding:28px;background:linear-gradient(160deg,rgba(240,183,74,.06),rgba(9,17,28,.72))}.gate h1{margin:9px 0;color:var(--paper);font:400 34px var(--serif)}.gate h1 em{color:var(--cyan)}.gate p{color:#8da2b2;font-size:11px}.eyebrow{color:var(--gold);font-size:9px;letter-spacing:.16em}.gate label{display:block;color:var(--gold);font-size:9px;letter-spacing:.14em;margin:16px 0 7px}.gate input,.toolbar input{width:100%;color:var(--paper);background:rgba(3,10,17,.8);border:1px solid rgba(247,241,223,.2);border-radius:2px;padding:12px;font:12px var(--mono)}.gate input:focus,.toolbar input:focus{outline:0;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(88,213,238,.08)}.gate .btn{width:100%;margin-top:14px}.error{color:#ff9d97;font-size:11px}.hidden,[hidden]{display:none!important}
+    .dashboard-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding:45px 0 22px}.dashboard-head h1{font:400 clamp(40px,6vw,72px)/.98 var(--serif);color:var(--paper);margin:11px 0 8px}.dashboard-head h1 em{color:var(--cyan);font-style:italic}.muted{color:#8da2b2;font:12px/1.6 var(--serif);max-width:700px;margin:0}.status{color:var(--cyan);font-size:10px;white-space:nowrap}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:22px}.stat{padding:15px;border:1px solid var(--line);background:rgba(6,19,32,.54)}.stat span{display:block;color:#8da2b2;font-size:9px;letter-spacing:.13em}.stat strong{display:block;margin-top:6px;color:var(--paper);font:700 27px var(--serif);line-height:1.1}
+    .toolbar{display:flex;align-items:center;gap:12px;margin:18px 0}.toolbar input{max-width:480px;flex:1}.count{color:#7d929f;font-size:10px;white-space:nowrap}.card{overflow:auto;border:1px solid var(--line);background:rgba(6,19,32,.48)}table{width:100%;min-width:1420px;border-collapse:collapse}thead th{position:sticky;top:0;z-index:2;background:#0d1b2a;color:var(--gold);text-align:left;font-size:9px;letter-spacing:.12em;padding:12px;border-bottom:1px solid rgba(240,183,74,.32);white-space:nowrap}tbody td{padding:12px;border-bottom:1px solid rgba(247,241,223,.08);font-size:10px;vertical-align:top}tbody tr:nth-child(even){background:rgba(247,241,223,.02)}tbody tr:hover{background:rgba(88,213,238,.045)}td.team{color:var(--paper);font-weight:700;min-width:180px}td.id{color:var(--cyan);font-size:9px;white-space:nowrap}.pill{display:inline-block;padding:3px 8px;border:1px solid rgba(88,213,238,.4);border-radius:99px;color:var(--cyan);font-size:9px;letter-spacing:.08em}.pill.duo{border-color:rgba(240,183,74,.45);color:var(--gold)}.text-cell{min-width:230px;max-width:310px;max-height:150px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;color:#c0cdd2}.score-input{width:82px;color:var(--paper);background:rgba(3,10,17,.85);border:1px solid rgba(240,183,74,.48);padding:9px;font:700 14px var(--mono)}.score-input:focus{outline:0;border-color:var(--cyan)}.save-mark{display:block;margin-top:7px;background:none;border:0;color:var(--cyan);font:9px var(--mono);cursor:pointer;padding:0}.save-mark:hover{text-decoration:underline}.empty{padding:44px 20px;text-align:center;color:#7d929f}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:10;background:#0d1b2a;border:1px solid rgba(240,183,74,.5);color:var(--paper);padding:11px 16px;font-size:10px;max-width:90vw}.toast.error-toast{border-color:rgba(200,53,44,.65);color:#ffaaa4}
+    @media(max-width:850px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-head{align-items:flex-start;flex-direction:column}.top{align-items:flex-start;flex-direction:column}.actions{width:100%}}
+    @media(max-width:520px){.wrap{padding:17px 12px 50px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:24px}.toolbar{align-items:stretch;flex-direction:column}.toolbar input{max-width:none}.count{white-space:normal}.gate{padding:22px 17px}}
+  </style>
 </head>
 <body>
-<div class="wrap">
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">RH</span><span><strong>Mission Control</strong><small>REVERSE HACKATHON 2026 · ORGANISER PANEL</small></span></a>
+      <div class="actions">
+        <a class="btn" href="index.html">View mission deck</a>
+        <button class="btn" id="refreshBtn" type="button" hidden>Refresh</button>
+        <button class="btn" id="exportBtn" type="button" hidden>Download Excel</button>
+        <button class="btn" id="lockBtn" type="button" hidden>Lock panel</button>
+      </div>
+    </header>
 
-  <header class="top">
-    <a class="brand" href="index.html">
-      <span class="brand-mark" aria-hidden="true">RH</span>
-      <span>
-        <h1>Mission Desk</h1>
-        <small>REVERSE HACKATHON 2026 &middot; REGISTRY CONTROL</small>
-      </span>
-    </a>
-    <div class="top-actions">
-      <a class="btn" href="index.html">View site</a>
-      <button class="btn" id="refreshBtn" type="button">Refresh</button>
-      <button class="btn primary" id="exportBtn" type="button">Download Excel</button>
-      <button class="btn" id="lockBtn" type="button" hidden>Lock</button>
-    </div>
-  </header>
+    <section class="gate" id="gate" aria-labelledby="gateTitle">
+      <div class="eyebrow">AUTHORISED ORGANISER ACCESS</div>
+      <h1 id="gateTitle">Open <em>control.</em></h1>
+      <p>Use the server-side ADMIN_KEY. It remains in this browser tab only and is never sent to team members.</p>
+      <form id="gateForm">
+        <label for="keyInput">ADMIN KEY</label>
+        <input id="keyInput" type="password" autocomplete="current-password" required placeholder="Paste the organiser key" spellcheck="false">
+        <button class="btn primary" id="unlockBtn" type="submit">Unlock mission control →</button>
+        <p class="error" id="gateError" role="alert"></p>
+      </form>
+    </section>
 
-  <!-- key gate -->
-  <section class="gate" id="gate">
-    <h2>Organiser access</h2>
-    <p>Enter the <code>ADMIN_KEY</code> configured on the server. It is kept in this browser tab only.</p>
-    <label for="keyInput">ADMIN KEY</label>
-    <input id="keyInput" type="password" autocomplete="current-password" placeholder="Paste your admin key" spellcheck="false">
-    <button class="btn primary" id="unlockBtn" type="button">Unlock registry</button>
-    <p class="err" id="gateErr" role="alert"></p>
-    <p class="hint">No login account &mdash; this key is the whole lock. Never share it publicly.</p>
-  </section>
+    <section id="dashboard" hidden>
+      <div class="dashboard-head">
+        <div><div class="eyebrow">REGISTRY + SUBMISSION REVIEW</div><h1>Teams <em>in the field.</em></h1><p class="muted">Review each team's problem statement and solution. Enter a mark from 0 to 100; marks are read-only in the participant workspace.</p></div>
+        <div class="status" id="status" role="status"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>TEAMS</span><strong id="sTeams">0</strong></div>
+        <div class="stat"><span>PARTICIPANTS</span><strong id="sParticipants">0</strong></div>
+        <div class="stat"><span>SUBMISSIONS</span><strong id="sSubmissions">0</strong></div>
+        <div class="stat"><span>MARKED</span><strong id="sMarked">0</strong></div>
+      </div>
+      <div class="toolbar"><input id="search" type="search" placeholder="Filter team, leader, domain or submission" aria-label="Filter teams"><span class="count" id="count"></span></div>
+      <div class="card">
+        <table>
+          <thead><tr><th>TEAM</th><th>TEAM LEADER</th><th>MEMBERS</th><th>DOMAIN</th><th>PROBLEM STATEMENT</th><th>SOLUTION</th><th>MARK / 100</th><th>UPDATED</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <p class="empty" id="empty" hidden>No teams found.</p>
+      </div>
+    </section>
+  </div>
+  <p class="toast" id="toast" hidden role="status"></p>
 
-  <!-- dashboard -->
-  <section id="dash" hidden>
-    <div class="stats">
-      <div class="stat"><span>REGISTRATIONS</span><strong id="sRegs">0</strong></div>
-      <div class="stat"><span>PARTICIPANTS</span><strong id="sParts">0</strong></div>
-      <div class="stat"><span>SOLO</span><strong id="sSolo">0</strong></div>
-      <div class="stat"><span>DUO</span><strong id="sDuo">0</strong></div>
-    </div>
+  <script>
+    (function () {
+      "use strict";
+      var KEY_STORE = "rh2026_admin_key";
+      var key = "";
+      var all = [];
+      var $ = function (selector) { return document.querySelector(selector); };
+      var rowsEl = $("#rows");
 
-    <div class="toolbar">
-      <input type="search" id="search" placeholder="Filter by ID, team, name, email or domain" aria-label="Filter registrations">
-      <span class="count" id="count">&nbsp;</span>
-    </div>
-
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>FORMAT</th><th>TEAM / ALIAS</th><th>LEAD / PARTICIPANT</th><th>PARTNER</th>
-            <th>DOMAIN</th><th>SUBMITTED</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-      <p class="empty" id="empty" hidden>No registrations yet.</p>
-    </div>
-  </section>
-</div>
-
-<p class="toast" id="toast" hidden role="status"></p>
-
-<script>
-(function () {
-  "use strict";
-
-  var KEY_STORE = "rh2026_admin_key";
-  var key = "";
-  var all = [];
-
-  var $ = function (s) { return document.querySelector(s); };
-  var gate = $("#gate"), dash = $("#dash"), rowsEl = $("#rows"), emptyEl = $("#empty");
-  var toastEl = $("#toast"), toastTimer = null;
-
-  function toast(msg) {
-    toastEl.textContent = msg;
-    toastEl.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 4200);
-  }
-
-  function esc(v) {
-    return String(v === undefined || v === null ? "" : v)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-  }
-
-  function fmtDate(value) {
-    if (!value) return "\u2014";
-    var d = new Date(value);
-    if (isNaN(d.getTime())) return "\u2014";
-    return d.toLocaleString("en-GB", {
-      day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
-    });
-  }
-
-  function api(path, options) {
-    var opts = options || {};
-    opts.headers = Object.assign({ "x-admin-key": key }, opts.headers || {});
-    return fetch(path, opts).then(function (res) {
-      return res.json().catch(function () { return {}; }).then(function (body) {
-        if (!res.ok) throw new Error(body.error || "Request failed (" + res.status + ")");
+      function esc(value) {
+        return String(value === undefined || value === null ? "" : value)
+          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+      }
+      function toast(message, isError) {
+        var el = $("#toast");
+        el.textContent = message;
+        el.classList.toggle("error-toast", !!isError);
+        el.hidden = false;
+        clearTimeout(toast.timer);
+        toast.timer = setTimeout(function () { el.hidden = true; }, 3600);
+      }
+      function formatDate(value) {
+        if (!value) return "—";
+        var date = new Date(value);
+        return isNaN(date.getTime()) ? "—" : date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      }
+      async function api(path, options) {
+        var opts = Object.assign({ cache: "no-store" }, options || {});
+        opts.headers = Object.assign({ "x-admin-key": key }, opts.headers || {});
+        if (opts.body && !opts.headers["Content-Type"]) opts.headers["Content-Type"] = "application/json";
+        var response = await fetch(path, opts);
+        var body = await response.json().catch(function () { return {}; });
+        if (!response.ok) throw new Error(body.error || "Request failed (" + response.status + ").");
         return body;
+      }
+      function hasSubmission(reg) {
+        return (typeof reg.problemStatement === "string" && reg.problemStatement.trim()) || (typeof reg.solution === "string" && reg.solution.trim());
+      }
+      function hasMark(reg) { return Number.isInteger(reg.mark) && reg.mark >= 0 && reg.mark <= 100; }
+      function render() {
+        var term = $("#search").value.trim().toLowerCase();
+        var list = term ? all.filter(function (reg) {
+          return [reg.teamName, reg.leader && reg.leader.fullName, reg.leader && reg.leader.email, reg.partner && reg.partner.fullName, reg.domain, reg.problemStatement, reg.solution]
+            .join(" ").toLowerCase().indexOf(term) !== -1;
+        }) : all;
+        $("#count").textContent = list.length + " of " + all.length + " teams";
+        $("#empty").hidden = list.length !== 0;
+        rowsEl.hidden = list.length === 0;
+        rowsEl.innerHTML = list.map(function (reg) {
+          var members = [reg.leader && reg.leader.fullName, reg.partner && reg.partner.fullName].filter(Boolean).map(esc).join("<br>") || "—";
+          var markValue = hasMark(reg) ? String(reg.mark) : "";
+          var updated = reg.workspaceUpdatedAt || reg.markUpdatedAt || reg.submittedAt;
+          return "<tr>" +
+            '<td class="team">' + esc(reg.teamName) + '<br><small class="id">' + esc(reg.registrationId) + "</small></td>" +
+            "<td>" + esc(reg.leader && reg.leader.fullName) + '<br><small style="color:#7d929f">' + esc(reg.leader && reg.leader.email) + "</small></td>" +
+            "<td>" + members + "</td>" +
+            '<td><span class="pill' + (reg.entryFormat === "duo" ? " duo" : "") + '">' + (reg.entryFormat === "duo" ? "DUO" : "SOLO") + "</span><br><small>" + esc(reg.domain) + "</small></td>" +
+            '<td class="text-cell">' + esc(reg.problemStatement || "Not submitted yet.") + "</td>" +
+            '<td class="text-cell">' + esc(reg.solution || "Not submitted yet.") + "</td>" +
+            '<td><input class="score-input" type="number" min="0" max="100" step="1" inputmode="numeric" data-score="' + esc(reg.registrationId) + '" value="' + esc(markValue) + '" aria-label="Mark for ' + esc(reg.teamName) + '"><button class="save-mark" type="button" data-save="' + esc(reg.registrationId) + '">Save mark</button></td>' +
+            "<td>" + esc(formatDate(updated)) + (reg.markUpdatedAt ? "<br><small>Mark: " + esc(formatDate(reg.markUpdatedAt)) + "</small>" : "") + "</td>" +
+          "</tr>";
+        }).join("");
+      }
+      async function load() {
+        $("#status").textContent = "Refreshing registry…";
+        var data = await api("/api/admin/registrations");
+        all = data.registrations || [];
+        var totals = data.totals || {};
+        $("#sTeams").textContent = totals.registrations == null ? all.length : totals.registrations;
+        $("#sParticipants").textContent = totals.participants == null ? all.reduce(function (n, r) { return n + (Number(r.headcount) || 0); }, 0) : totals.participants;
+        $("#sSubmissions").textContent = totals.submissions == null ? all.filter(hasSubmission).length : totals.submissions;
+        $("#sMarked").textContent = totals.marked == null ? all.filter(hasMark).length : totals.marked;
+        render();
+        $("#status").textContent = "Registry updated " + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      }
+      function lock() {
+        key = "";
+        all = [];
+        try { sessionStorage.removeItem(KEY_STORE); } catch (_) {}
+        $("#dashboard").hidden = true;
+        $("#gate").hidden = false;
+        $("#lockBtn").hidden = true;
+        $("#refreshBtn").hidden = true;
+        $("#exportBtn").hidden = true;
+        $("#keyInput").value = "";
+      }
+      $("#gateForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        key = $("#keyInput").value.trim();
+        $("#gateError").textContent = "";
+        $("#unlockBtn").disabled = true;
+        try {
+          await load();
+          sessionStorage.setItem(KEY_STORE, key);
+          $("#gate").hidden = true;
+          $("#dashboard").hidden = false;
+          $("#lockBtn").hidden = false;
+          $("#refreshBtn").hidden = false;
+          $("#exportBtn").hidden = false;
+        } catch (error) {
+          key = "";
+          $("#gateError").textContent = error.message;
+        } finally { $("#unlockBtn").disabled = false; }
       });
-    });
-  }
-
-  function render() {
-    var term = $("#search").value.trim().toLowerCase();
-    var list = all;
-    if (term) {
-      list = all.filter(function (r) {
-        return [r.registrationId, r.teamName, r.leader && r.leader.fullName, r.leader && r.leader.email,
-          r.partner && r.partner.fullName, r.domain, r.heardAbout]
-          .join(" ").toLowerCase().indexOf(term) !== -1;
+      $("#search").addEventListener("input", render);
+      $("#refreshBtn").addEventListener("click", function () { if (key) load().catch(function (error) { toast(error.message, true); }); });
+      $("#lockBtn").addEventListener("click", lock);
+      rowsEl.addEventListener("click", async function (event) {
+        var registrationId = event.target && event.target.dataset && event.target.dataset.save;
+        if (!registrationId) return;
+        var input = rowsEl.querySelector('input[data-score="' + CSS.escape(registrationId) + '"]');
+        var button = event.target;
+        button.disabled = true;
+        try {
+          await api("/api/admin/marks", { method: "PATCH", body: JSON.stringify({ registrationId: registrationId, mark: input.value }) });
+          toast(input.value === "" ? "Mark cleared." : "Mark saved.", false);
+          await load();
+        } catch (error) { toast(error.message, true); }
+        finally { button.disabled = false; }
       });
-    }
-
-    $("#count").textContent = list.length + " of " + all.length + " shown";
-    emptyEl.hidden = list.length !== 0;
-    rowsEl.hidden = list.length === 0;
-
-    rowsEl.innerHTML = list.map(function (r) {
-      var partner = r.partner ? r.partner.fullName : "\u2014";
-      var partnerExtra = r.partner ? " (" + esc(r.partner.year) + ", " + esc(r.partner.rollNumber) + ")" : "";
-      return "<tr>" +
-        '<td class="id">' + esc(r.registrationId) + "</td>" +
-        '<td><span class="pill' + (r.entryFormat === "duo" ? " duo" : "") + '">' +
-          (r.entryFormat === "duo" ? "DUO" : "SOLO") + "</span></td>" +
-        '<td class="team">' + esc(r.teamName) + "</td>" +
-        "<td>" + esc(r.leader.fullName) + "<br><small style='color:#7d929f'>" +
-          esc(r.leader.email) + "</small></td>" +
-        "<td>" + partner + partnerExtra + "</td>" +
-        "<td>" + esc(r.domain) + "</td>" +
-        "<td>" + esc(fmtDate(r.submittedAt)) + "</td>" +
-      "</tr>";
-    }).join("");
-  }
-
-  function load() {
-    return api("/api/admin/registrations").then(function (data) {
-      all = data.registrations || [];
-      $("#sRegs").textContent = data.totals.registrations;
-      $("#sParts").textContent = data.totals.participants;
-      $("#sSolo").textContent = data.totals.solo;
-      $("#sDuo").textContent = data.totals.duo;
-      render();
-    });
-  }
-
-  function unlock() {
-    key = $("#keyInput").value.trim();
-    if (!key) { $("#gateErr").textContent = "Enter the admin key."; $("#gateErr").classList.add("on"); return; }
-    $("#unlockBtn").disabled = true;
-    load().then(function () {
-      try { sessionStorage.setItem(KEY_STORE, key); } catch (e) {}
-      gate.hidden = true;
-      dash.hidden = false;
-      $("#lockBtn").hidden = false;
-      $("#gateErr").classList.remove("on");
-    }).catch(function (e) {
-      key = "";
-      $("#gateErr").textContent = e.message;
-      $("#gateErr").classList.add("on");
-    }).then(function () {
-      $("#unlockBtn").disabled = false;
-    });
-  }
-
-  function lock() {
-    key = "";
-    all = [];
-    try { sessionStorage.removeItem(KEY_STORE); } catch (e) {}
-    dash.hidden = true;
-    gate.hidden = false;
-    $("#lockBtn").hidden = true;
-    $("#keyInput").value = "";
-  }
-
-  /* ---- wiring ---- */
-  $("#unlockBtn").addEventListener("click", unlock);
-  $("#keyInput").addEventListener("keydown", function (e) { if (e.key === "Enter") unlock(); });
-  $("#lockBtn").addEventListener("click", lock);
-  $("#refreshBtn").addEventListener("click", function () {
-    if (!key) return;
-    $("#refreshBtn").disabled = true;
-    load().catch(function (e) { toast(e.message); }).then(function () { $("#refreshBtn").disabled = false; });
-  });
-  $("#search").addEventListener("input", render);
-
-  $("#exportBtn").addEventListener("click", function () {
-    if (!key) return;
-    var btn = this;
-    btn.disabled = true;
-    fetch("/api/admin/export", { headers: { "x-admin-key": key } })
-      .then(function (res) {
-        if (!res.ok) return res.json().then(function (b) { throw new Error(b.error || "Export failed."); });
-        var stamp = new Date().toISOString().slice(0, 10);
-        var disp = res.headers.get("content-disposition") || "";
-        var match = disp.match(/filename="?([^";]+)"?/);
-        return res.blob().then(function (blob) { return { blob: blob, name: match ? match[1] : "registrations-" + stamp + ".xlsx" }; });
-      })
-      .then(function (out) {
-        var url = URL.createObjectURL(out.blob);
-        var a = document.createElement("a");
-        a.href = url; a.download = out.name;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-        toast("Spreadsheet downloaded.");
-      })
-      .catch(function (e) { toast(e.message); })
-      .then(function () { btn.disabled = false; });
-  });
-
-  /* Re-unlock automatically when the key is still in this tab. */
-  try {
-    var saved = sessionStorage.getItem(KEY_STORE);
-    if (saved) { key = saved; $("#keyInput").value = saved; unlock(); }
-  } catch (e) {}
-})();
-</script>
+      $("#exportBtn").addEventListener("click", async function () {
+        if (!key) return;
+        var button = this;
+        button.disabled = true;
+        try {
+          var response = await fetch("/api/admin/export", { headers: { "x-admin-key": key }, cache: "no-store" });
+          if (!response.ok) {
+            var body = await response.json().catch(function () { return {}; });
+            throw new Error(body.error || "Export failed.");
+          }
+          var blob = await response.blob();
+          var disposition = response.headers.get("content-disposition") || "";
+          var match = disposition.match(/filename="?([^";]+)"?/);
+          var link = document.createElement("a");
+          var objectUrl = URL.createObjectURL(blob);
+          link.href = objectUrl;
+          link.download = match ? match[1] : "reverse-hackathon-teams.xlsx";
+          document.body.appendChild(link); link.click(); link.remove();
+          setTimeout(function () { URL.revokeObjectURL(objectUrl); }, 3000);
+          toast("Spreadsheet downloaded.", false);
+        } catch (error) { toast(error.message, true); }
+        finally { button.disabled = false; }
+      });
+      try {
+        var saved = sessionStorage.getItem(KEY_STORE);
+        if (saved) {
+          key = saved;
+          $("#keyInput").value = saved;
+          load().then(function () {
+            $("#gate").hidden = true;
+            $("#dashboard").hidden = false;
+            $("#lockBtn").hidden = false;
+            $("#refreshBtn").hidden = false;
+            $("#exportBtn").hidden = false;
+          }).catch(function () { lock(); });
+        }
+      } catch (_) {}
+    })();
+  </script>
 </body>
 </html>

@@ -10,18 +10,19 @@ already-built, deliberately vulnerable system and must find, patch and defend th
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The whole public site — markup, CSS and JS in one file. This is what visitors get. |
-| `admin.html` | Organiser dashboard. Asks for `ADMIN_KEY`, shows registration totals and Excel download. |
+| `index.html` | Main public landing/registration page — markup, CSS and JS in one file. |
+| `user.html` | Participant team workspace: password sign-in, problem/solution editing and read-only mark. |
+| `admin.html` | Organiser dashboard. Asks for `ADMIN_KEY`, reviews submissions, records marks and downloads Excel. |
 | `hero-bg.jpg`, `superman-hero.jpg`, `about-bg.jpg`, `standards-bg.jpg`, `dc-contact-art.jpg`, `dc-contact-clear.jpg` / `.webp` / `.avif`, `srm-valliammai-logo.jpg`, `assets/superman-hero.png` / `.webp` / `.avif` | Section backgrounds and art. Modern browsers use the smaller AVIF/WebP variants; original files remain as fallbacks. |
 | `assets/villains/` | The 15 gallery cards, downloaded from the old CDN so the site no longer depends on a third-party host. |
 | `og-deck.png` | Open Graph preview image. |
-| `api/` | Vercel serverless functions (Node). Registration storage + organiser API. |
+| `api/` | Vercel serverless functions (Node). Registration, team authentication/workspace, and organiser APIs. |
 | `scripts/check-site.mjs` | Pre-deploy check. Run it before every deploy. |
 | `dev-host.cjs` | Local-only helper that serves the static site and runs `api/` without Vercel. |
 | `src/`, `next.config.mjs`, `tailwind.config.ts` | An older Next.js draft with a different theme. **Not deployed** — see "Legacy files" below. |
 
-The public site is a static HTML file plus serverless functions. There is no build step for the
-front end, and no framework.
+The site is static HTML pages plus serverless functions. There is no build step for the front end,
+and no framework.
 
 ## Event facts
 
@@ -56,6 +57,7 @@ See `.env.example`. Never commit real values.
 | `MONGODB_URI` | Atlas connection string, e.g. `mongodb+srv://user:pass@cluster.mongodb.net` |
 | `MONGODB_DB` | Database name (default `reversehack2026`) |
 | `ADMIN_KEY` | Long random string that unlocks `/admin.html` and every `/api/admin/*` route |
+| `TEAM_SESSION_SECRET` | Optional long random secret for signing team sessions; if unset, a domain-separated key is derived from `ADMIN_KEY` |
 
 Generate a key with:
 
@@ -96,29 +98,49 @@ a unique index on the lowercased team name / Solo alias and another on participa
 Registration is free; no UPI payment, transaction ID, receipt, or proof is required. `api/_lib.js`
 is the server-side validation source of truth, and the page mirrors field errors onto the matching input.
 
-The form collects the entry format (Solo or Duo), a unique team name or Solo alias, and the primary
-participant's name, email, phone, year, department, gender and register number. Duo entries also
-require the partner's name, year and register number. Every entry includes one of 15 domains, how
-the participant heard about the event, and agreement to the rules.
+The form collects the entry format (Solo or Duo), a unique team name or Solo alias, a required
+8–72-character team-workspace password, and the primary participant's name, email, phone, year,
+department, gender and register number. Duo entries also require the partner's name, year and
+register number. Every entry includes one of 15 domains, how the participant heard about the event,
+and agreement to the rules. On success, the team name and password are shown once; the password is
+not emailed, exported, or returned by later APIs.
+
+## Participant team workspace
+
+Teams can open `/user.html` and sign in with their team name / Solo alias and registration password.
+The server stores only a salted scrypt hash, and the browser receives a signed, HttpOnly, Secure-on-
+Vercel, SameSite=Lax cookie that expires after seven days. Team endpoints return only that team's
+workspace-safe information. Teams can save a problem statement (up to 5,000 characters) and solution
+(up to 8,000 characters). A score entered by an organiser is visible but cannot be changed by the team.
+
+The confirmation page shows the new password once. It cannot be recovered from the database or
+organiser dashboard. If a password is lost, contact the event organisers rather than sharing secrets
+through chat.
 
 ### API
 
 | Route | Method | Auth | Purpose |
 | --- | --- | --- | --- |
 | `/api/register` | POST | none | Store one free registration. `201`, or `400` with `fieldErrors`, `409` on duplicate team/email, `403` after the deadline, `503` if Mongo is unreachable. |
-| `/api/admin/registrations` | GET | `x-admin-key` | Registration details and Solo/Duo/participant totals; legacy payment fields are excluded. |
-| `/api/admin/export` | GET | `x-admin-key` | Streams a styled `.xlsx`. |
+| `/api/auth/login` | POST | Team name + password | Verify a team credential and issue an HttpOnly session cookie. |
+| `/api/auth/logout` | POST | Team session | Expire the team session cookie. |
+| `/api/team/me` | GET | Team session | Return the signed-in team's profile, workspace content and read-only mark. |
+| `/api/team/submit` | POST | Team session | Save only the problem statement and solution for the signed-in team. |
+| `/api/admin/registrations` | GET | `x-admin-key` | Registration details and totals including submissions and marks; authentication secrets are excluded. |
+| `/api/admin/marks` | PATCH | `x-admin-key` | Set or clear an integer mark from 0 to 100. |
+| `/api/admin/export` | GET | `x-admin-key` | Streams a styled `.xlsx` with registration, submission, score and summary sheets/columns; authentication secrets are excluded. |
 
 The admin key is compared with `crypto.timingSafeEqual`, so it cannot be probed byte by byte.
 
 ## Organiser dashboard
 
 Open `/admin.html`, paste the `ADMIN_KEY`, and the dashboard shows registrations, participants,
-and Solo/Duo totals. You can filter the table and download a workbook with three sheets:
+submissions and marked teams. Organisers can review problem statements and solutions, set or clear a
+0–100 mark, filter the table, and download a workbook with three sheets:
 
 - **Participants** — one row per human. This is what the check-in desk wants.
-- **Registrations** — one row per entry.
-- **Summary** — event and registration totals; no fee reconciliation is included.
+- **Registrations** — one row per entry, with problem statement, solution, mark and update timestamps.
+- **Summary** — event, registration, submission and mark totals; no fee reconciliation is included.
 
 The key is held in `sessionStorage`, so it disappears when the tab closes.
 

@@ -2,7 +2,7 @@
   "name": "reverse-hackathon-2026",
   "version": "1.0.0",
   "private": true,
-  "description": "Reverse Hackathon 2026 — static Mission Deck site with MongoDB registration, payment proof and organiser dashboard.",
+  "description": "Reverse Hackathon 2026 — free Solo/Duo registration, secure team workspace and organizer scoring dashboard.",
   "scripts": {
     "dev": "node dev-host.cjs",
     "dev:vercel": "vercel dev",

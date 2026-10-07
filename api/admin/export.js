@@ -62,6 +62,11 @@ const REGISTRATION_KEYS = [
   "Domain",
   "Heard about",
   "Submitted at",
+  "Problem statement",
+  "Solution",
+  "Mark / 100",
+  "Workspace updated at",
+  "Mark updated at",
 ];
 
 /** 1-based column number for a header name. */
@@ -182,6 +187,11 @@ function buildWorkbook(regs, totals) {
     "Domain": reg.domain,
     "Heard about": reg.heardAbout,
     "Submitted at": reg.submittedAt,
+    "Problem statement": reg.problemStatement || "",
+    "Solution": reg.solution || "",
+    "Mark / 100": Number.isInteger(reg.mark) ? reg.mark : "",
+    "Workspace updated at": reg.workspaceUpdatedAt || "",
+    "Mark updated at": reg.markUpdatedAt || "",
   }));
 
   if (regRows.length > 0) {
@@ -192,8 +202,10 @@ function buildWorkbook(regs, totals) {
   }
   styleHeader(sheet, REGISTRATION_KEYS.length);
   sheet.getColumn(at(REGISTRATION_KEYS, "Submitted at")).numFmt = "dd-mmm-yyyy hh:mm";
+  sheet.getColumn(at(REGISTRATION_KEYS, "Workspace updated at")).numFmt = "dd-mmm-yyyy hh:mm";
+  sheet.getColumn(at(REGISTRATION_KEYS, "Mark updated at")).numFmt = "dd-mmm-yyyy hh:mm";
   finishSheet(sheet, REGISTRATION_KEYS, [
-    5, 22, 12, 24, 11, 24, 26, 14, 26, 18, 20, 12, 19, 26, 18, 20,
+    5, 22, 12, 24, 11, 24, 26, 14, 26, 18, 20, 12, 19, 26, 18, 20, 38, 38, 12, 20, 20,
   ]);
 
   /* ---- Summary ---- */
@@ -211,6 +223,8 @@ function buildWorkbook(regs, totals) {
     ["Total participants", totals.participants],
     ["Solo entries", totals.solo],
     ["Duo entries", totals.duo],
+    ["Teams with submissions", totals.submissions || 0],
+    ["Teams marked", totals.marked || 0],
     ["", ""],
     ["Generated at", new Date()],
   ];
@@ -250,7 +264,11 @@ module.exports = async function handler(req, res) {
 
   try {
     const col = await getRegistrations();
-    const regs = await col.find({}, { projection: { payment: 0, amountDue: 0 } }).sort({ submittedAt: -1 }).toArray();
+    const regs = await col.find({}, { projection: {
+      _id: 0, registrationId: 1, entryFormat: 1, teamName: 1, headcount: 1,
+      leader: 1, partner: 1, domain: 1, heardAbout: 1, submittedAt: 1,
+      problemStatement: 1, solution: 1, mark: 1, workspaceUpdatedAt: 1, markUpdatedAt: 1,
+    } }).sort({ submittedAt: -1 }).toArray();
 
     const totals = regs.reduce(
       (acc, r) => {
@@ -258,9 +276,11 @@ module.exports = async function handler(req, res) {
         acc.participants += r.headcount;
         if (r.entryFormat === "duo") acc.duo += 1;
         else acc.solo += 1;
+        if ((typeof r.problemStatement === "string" && r.problemStatement.trim()) || (typeof r.solution === "string" && r.solution.trim())) acc.submissions += 1;
+        if (Number.isInteger(r.mark) && r.mark >= 0 && r.mark <= 100) acc.marked += 1;
         return acc;
       },
-      { registrations: 0, participants: 0, solo: 0, duo: 0 }
+      { registrations: 0, participants: 0, solo: 0, duo: 0, submissions: 0, marked: 0 }
     );
 
     const buffer = await buildWorkbook(regs, totals).xlsx.writeBuffer();
@@ -276,3 +296,5 @@ module.exports = async function handler(req, res) {
     return res.status(503).json({ error: "Could not build the spreadsheet." });
   }
 };
+
+module.exports.buildWorkbook = buildWorkbook;

@@ -21,6 +21,7 @@ const ok = (msg) => console.log("  ok    " + msg);
 
 const html = fs.readFileSync(rel("index.html"), "utf8");
 const admin = fs.readFileSync(rel("admin.html"), "utf8");
+const user = fs.readFileSync(rel("user.html"), "utf8");
 
 /* ---------------------------------------------------- assets referenced --- */
 console.log("\nAssets");
@@ -55,13 +56,26 @@ for (const s of scripts) {
     fail(`script #${n}: ${e.message}`);
   }
 }
-for (const [name, src] of [["admin.html", admin]]) {
+for (const [name, src] of [["admin.html", admin], ["user.html", user]]) {
   const ascripts = [...src.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)]
     .map((m) => m[1]).filter((s) => s.trim());
   ascripts.forEach((s, i) => {
     try { new vm.Script(s, { filename: `${name}#script-${i + 1}` }); ok(`${name} script #${i + 1}`); }
     catch (e) { fail(`${name} script #${i + 1}: ${e.message}`); }
   });
+}
+
+console.log("\nWorkspace features");
+for (const [source, phrase, label] of [
+  [html, 'id="f-password"', "registration creates a team password"],
+  [html, 'href="user.html"', "public page links to Team Login"],
+  [user, 'id="submissionForm"', "participant workspace form exists"],
+  [user, 'problemStatement" name="problemStatement" maxlength="5000"', "problem statement is capped at 5,000 characters"],
+  [user, 'solution" name="solution" class="solution" maxlength="8000"', "solution is capped at 8,000 characters"],
+  [user, "/api/team/submit", "team submission API is wired"],
+  [admin, "/api/admin/marks", "organizer score endpoint is wired"],
+]) {
+  source.includes(phrase) ? ok(label) : fail(label + " is missing");
 }
 
 /* ------------------------------------------------------------ tag balance -- */

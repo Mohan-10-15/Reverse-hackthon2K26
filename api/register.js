@@ -15,8 +15,10 @@ const {
   readJsonBody,
   sendConfirmationEmail,
 } = require("./_lib");
+const { hashTeamPassword } = require("./_team-auth");
 
 module.exports = async function handler(req, res) {
+  res.setHeader("Cache-Control", "private, no-store, max-age=0");
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Use POST." });
@@ -76,8 +78,16 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    const { teamPassword, ...registration } = value;
+    const passwordCredentials = await hashTeamPassword(teamPassword);
     const doc = {
-      ...value,
+      ...registration,
+      ...passwordCredentials,
+      problemStatement: "",
+      solution: "",
+      mark: null,
+      workspaceUpdatedAt: null,
+      markUpdatedAt: null,
       registrationId: newRegistrationId(),
       submittedAt: new Date(),
     };

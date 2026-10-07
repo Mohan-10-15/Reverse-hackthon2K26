@@ -1,9 +1,9 @@
 /**
  * Shared helpers for the Mission Deck serverless functions.
  *
- * The site itself is a single static index.html, so everything that needs a
- * server (registration storage, the organiser dashboard, the Excel export)
- * lives in /api as Vercel Node functions talking to MongoDB Atlas.
+ * The public landing page and team portal are static HTML. Everything that
+ * needs a server (registration, workspace sessions/submissions, organizer
+ * review and Excel export) lives in /api as Vercel Node functions on Atlas.
  */
 
 const { MongoClient } = require("mongodb");
@@ -188,6 +188,11 @@ function validateRegistration(body) {
   const teamName = clean(body.teamName, 60);
   if (teamName.length < 2) fail("teamName", "Enter a team name or solo alias.");
 
+  const teamPassword = typeof body.password === "string" ? body.password : "";
+  if (teamPassword.length < 8 || teamPassword.length > 72) {
+    fail("password", "Create a team password from 8 to 72 characters.");
+  }
+
   const leader = {
     fullName: clean(body.leader?.fullName, 80),
     email: clean(body.leader?.email, 120).toLowerCase(),
@@ -247,6 +252,7 @@ function validateRegistration(body) {
       entryFormat,
       teamName,
       teamNameKey: teamName.toLowerCase(),
+      teamPassword,
       leader,
       partner,
       emails,
